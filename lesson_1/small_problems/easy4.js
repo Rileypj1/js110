@@ -67,23 +67,129 @@ isRealPalindrome('356653');              // true
 isRealPalindrome('356a653');             // true
 isRealPalindrome('123ab321');            // false
 */
-
+/*
 //Running Totals
 // Problem:
 //   - Input: array of numbers 
 //   - Output: array of numbers that is running total of elements from input array
 // Rules: same number of elements in output as there were in input array; single element array will just output the single element 
-function runningTotal(arr) {
-  let runningTotalArray = []
-  arr.reduce((acc, currentVal) => {
-    let newVal = acc + currentVal
-    runningTotalArray.push(newVal);
-    return newVal;
-  }, 0)
+// function runningTotal(arr) {
+//   let runningTotalArray = []
+//   arr.reduce((acc, currentVal) => {
+//     let newVal = acc + currentVal
+//     runningTotalArray.push(newVal);
+//     return newVal;
+//   }, 0)
   
-  return runningTotalArray;
+//   return runningTotalArray;
+// }
+// console.log(runningTotal([2, 5, 13]));             // [2, 7, 20]
+// console.log(runningTotal([14, 11, 7, 15, 20]));    // [14, 25, 32, 47, 67]
+// console.log(runningTotal([3]));                    // [3]
+// console.log(runningTotal([]));                     // []
+*/
+/*
+//Letter Counter (Part 1)
+// Problem: 
+//   - Input: string with space-separated words
+//   - Output: object literal that has length of words as keys and the number of words with that length in the input string as the value
+// Rules: 
+//   - Empty string will return an empty object
+//   - punctation counts as a character in a word
+// Example:
+//   "What's" -> length will be 6 (this is for Part 1 only)
+// Algorithm:
+//   - create an empty object letterCounter
+//   - convert the input string to an array, where the words separated by spaces are each an element
+//   - loop over the array
+//     - get the length of the current element in the array
+//     - Check if this length already exists in the letterCounter object
+//       - add this length as a key to the object letterCounter if it doesn't exist already and set its value to 1
+//       - if it already exists, increment its value by 1
+//   - return letterCounter
+
+function wordSizes(str) {
+  let letterCounter = {};
+  if (str) {
+    let arrayOfStr = str.split(' ');
+    arrayOfStr.forEach((el) => {
+      el = removeNonLetters(el);
+      let len = el.length;
+      if (letterCounter.hasOwnProperty(len)) {
+        letterCounter[len] += 1;
+      } else {
+        letterCounter[len] = 1;
+      }
+    })
+  }
+  console.log(letterCounter);
 }
-console.log(runningTotal([2, 5, 13]));             // [2, 7, 20]
-console.log(runningTotal([14, 11, 7, 15, 20]));    // [14, 25, 32, 47, 67]
-console.log(runningTotal([3]));                    // [3]
-console.log(runningTotal([]));                     // []
+function removeNonLetters(str) {
+  return str.replace(/[^a-zA-Z/]/g, '')
+}
+wordSizes('Four score and seven.');                       // { "3": 1, "4": 1, "5": 1, "6": 1 }
+wordSizes('Hey diddle diddle, the cat and the fiddle!');  // { "3": 5, "6": 1, "7": 2 }
+wordSizes("What's up doc?");                              // { "2": 1, "4": 1, "6": 1 }
+wordSizes('');                                            // {}
+*/
+/*
+//Letter Swap
+// Problem:
+//   - Input: string that may be space separated words or a single word
+//   - Output: new string that has the first and last letter of every word in input string switched
+// Example:
+// swap('Oh what a wonderful day it is');  // "hO thaw a londerfuw yad ti si"
+// swap('Abcde');                          // "ebcdA"
+// swap('a');                              // "a"
+
+// Algorithm:
+//   - create a new empty string variable, swappedStr
+//   - convert the input string to an array where each element is a word from the string 
+//   - iterate over the array
+//      - for every element return a new string that swaps the first and last letter
+function swap(str) {
+    let arrayOfWords = str.split(' ');
+    let swappedArray = arrayOfWords.map(el => el.length > 1 ? el[el.length-1] + el.slice(1,el.length-1) + el[0] : el)
+    console.log(swappedArray.join(' '));
+  }
+
+swap('Oh what a wonderful day it is');  // "hO thaw a londerfuw yad ti si"
+swap('Abcde');                          // "ebcdA"
+swap('a');                              // "a"
+*/
+/*
+// Convert a String to a Number
+function stringToSignedInteger(str) {
+  const DIGITS = {
+    0: 0,
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9
+  }
+  let convertedNum = 0;
+  let strArray = str.split('');
+  if (str[0] === '-' || str[0] === '+') {
+    strArray.shift();
+  } 
+  strArray.reduce((acc, currentVal) => {
+    convertedNum = DIGITS[currentVal] + (acc * 10);
+    return convertedNum;
+  },0)
+  if (str[0] === '-') {
+    convertedNum *= -1;
+  }
+
+  return convertedNum;
+}
+console.log(stringToSignedInteger("4321") === 4321); // logs true
+console.log(stringToSignedInteger("-570") === -570); // logs true
+console.log(stringToSignedInteger("+100") === 100); // logs true
+*/
+
+// Convert a Number to a String
