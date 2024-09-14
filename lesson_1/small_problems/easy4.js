@@ -191,5 +191,59 @@ console.log(stringToSignedInteger("4321") === 4321); // logs true
 console.log(stringToSignedInteger("-570") === -570); // logs true
 console.log(stringToSignedInteger("+100") === 100); // logs true
 */
-
+/*
 // Convert a Number to a String
+// Problem:
+//   - Input: number
+//   - Output: same number converted to a string
+//   - Rules: can't use any built-in function to convert 
+// Examples: 
+// integerToString(4321);        // "4321"
+// integerToString(0);           // "0"
+// integerToString(5000);        // "5000"
+// integerToString(1234567890);  // "1234567890"
+
+// Algo:
+//   - create a reference object where the keys are numbers 0-9, and the values are the strings of those keys 0-9
+//   - create a new variable that is a copy of the input number
+//   - create a new variable that is an empty string
+//   - iterate over the copy of the number
+//     - get the remainder by 10 of the number and save this result to the new number variable
+//     - get the string version of this number by looking it up in our reference object
+//     - concatenate this string value 
+//     - set number equal to  number divded by 10 (rounded down)
+//     - complete iterations until the number is 0
+//   - return the concatenated string
+
+function integerToString(num) {
+  const numToStrings =  {
+    0: '0',
+    1: '1',
+    2: '2',
+    3: '3',
+    4: '4',
+    5: '5',
+    6: '6',
+    7: '7',
+    8: '8',
+    9: '9'
+  }
+  let numToString = '';
+  if (num === 0) {
+    numToString = numToStrings[num];
+    console.log(numToString);
+    return numToString;
+  }
+  while (num > 0) {
+    let remainder = num % 10;
+    let strRemainder = numToStrings[remainder];
+    numToString = strRemainder + numToString;
+    num = Math.floor(num / 10);
+  }
+  console.log(numToString);
+}
+integerToString(4321);        // "4321"
+integerToString(0);           // "0"
+integerToString(5000);        // "5000"
+integerToString(1234567890);  // "1234567890"
+*/
