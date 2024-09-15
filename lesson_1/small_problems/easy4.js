@@ -191,8 +191,8 @@ console.log(stringToSignedInteger("4321") === 4321); // logs true
 console.log(stringToSignedInteger("-570") === -570); // logs true
 console.log(stringToSignedInteger("+100") === 100); // logs true
 */
-/*
-// Convert a Number to a String
+
+// Convert a Number to a String Part 1 & 2
 // Problem:
 //   - Input: number
 //   - Output: same number converted to a string
@@ -214,8 +214,17 @@ console.log(stringToSignedInteger("+100") === 100); // logs true
 //     - set number equal to  number divded by 10 (rounded down)
 //     - complete iterations until the number is 0
 //   - return the concatenated string
-
-function integerToString(num) {
+function getSign(num) {
+  switch (Math.sign(num)) {
+    case 1:
+      return '+';
+    case -1:
+      return '-'
+    default:
+      return '';
+  }
+}
+function signedIntegerToString(num) {
   const numToStrings =  {
     0: '0',
     1: '1',
@@ -229,21 +238,21 @@ function integerToString(num) {
     9: '9'
   }
   let numToString = '';
+  let sign = getSign(num);
   if (num === 0) {
     numToString = numToStrings[num];
-    console.log(numToString);
     return numToString;
   }
+  num = Math.abs(num);
   while (num > 0) {
     let remainder = num % 10;
     let strRemainder = numToStrings[remainder];
     numToString = strRemainder + numToString;
     num = Math.floor(num / 10);
   }
-  console.log(numToString);
+  numToString = sign + numToString;
+  return numToString;
 }
-integerToString(4321);        // "4321"
-integerToString(0);           // "0"
-integerToString(5000);        // "5000"
-integerToString(1234567890);  // "1234567890"
-*/
+console.log(signedIntegerToString(4321)) //=== "+4321");
+console.log(signedIntegerToString(-123)) //=== "-123");
+console.log(signedIntegerToString(0))// === "0");
