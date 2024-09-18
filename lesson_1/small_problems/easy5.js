@@ -119,3 +119,80 @@ function interleave(first, second) {
 }
 interleave([1, 2, 3], ['a', 'b', 'c']);    // [1, "a", 2, "b", 3, "c"]
 */
+/*
+//Multiplicative Average
+function multiplicativeAverage(arr) {
+  let multiplicative = arr.reduce((acc, val) => acc * val, 1);
+  let avg = Number(multiplicative / arr.length).toFixed(3);
+  console.log(String(avg));
+}
+multiplicativeAverage([3, 5]);                   // "7.500"
+multiplicativeAverage([2, 5, 7, 11, 13, 17]);    // "28361.667"
+*/
+/*
+//Multiply lists
+function multiplyList(first, second) {
+  let multiplesList = [];
+  first.forEach((el, idx) => {
+    let product = el * second[idx];
+    multiplesList.push(product);
+  })
+  console.log(multiplesList);
+}
+multiplyList([3, 5, 7], [9, 10, 11]);    // [27, 50, 77]
+*/
+/*
+//List of Digits
+function digitList(num) {
+  let digits = [];
+  while (num > 0) {
+    let current = num % 10
+    digits.push(current);
+    num = Math.floor(num / 10);
+  }
+  console.log(digits.reverse());
+}
+digitList(12345);       // [1, 2, 3, 4, 5]
+digitList(7);           // [7]
+digitList(375290);      // [3, 7, 5, 2, 9, 0]
+digitList(444);         // [4, 4, 4]
+*/
+/*
+//How Many?
+function countOccurrences(arr) {
+  let tracker = {};
+  vehicles.forEach(el => {
+    if (tracker.hasOwnProperty(el)) {
+      tracker[el] += 1;
+    } else {
+      tracker[el] = 1;
+    }
+  })
+  Object.entries(tracker).forEach(nested =>
+    console.log(nested[0] + ' => ' + nested[1])
+  )
+}
+let vehicles = ['car', 'car', 'truck', 'car', 'SUV', 'truck',
+  'motorcycle', 'suv', 'motorcycle', 'car', 'truck'];
+
+countOccurrences(vehicles);
+
+// console output -- your output sequence may be different
+// car => 4
+// truck => 3
+// SUV => 1
+// motorcycle => 2
+// suv => 1
+*/
+/*
+//Array Average
+function average(arr) {
+  let avg = Math.floor((arr.reduce((acc, val) => acc + val)) / arr.length);
+  console.log(avg);
+}
+
+average([1, 5, 87, 45, 8, 8]);       // 25
+average([9, 47, 23, 95, 16, 52]);    // 40
+*/
+
+//After Midnight (Part 1)
