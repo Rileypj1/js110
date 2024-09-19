@@ -226,24 +226,78 @@ function timeOfDay(integer) {
   const MINUTES = 60;
   const HOURS = 24;
   const MINUTES_IN_A_DAY = MINUTES * HOURS;
+  let finalHours = 0;
+  let finalMinutes = 0;
+  let minutesRemaining = 0;
   if (!integer) return finalTime;
 
+  if (integer < MINUTES && integer > 0) {
+    let int = Math.abs(integer)
+    finalHours = '00';
+    finalMinutes = String(int).length === 1 ? '0' + String(int): String(int);  
+    return finalHours + ':' + finalMinutes;
+  }
+  if (integer < 0) {
+    minutesRemaining = MINUTES_IN_A_DAY - (Math.abs(integer) % MINUTES_IN_A_DAY);
+  } else {
+    minutesRemaining = (Math.abs(integer) % MINUTES_IN_A_DAY);
+  }
 
-  let minutesRemaining = MINUTES_IN_A_DAY - (Math.abs(integer) % MINUTES_IN_A_DAY);
-  let finalHours = Math.floor(minutesRemaining / MINUTES);
-  let finalMinutes = String(minutesRemaining % MINUTES);
+  if (minutesRemaining < MINUTES) {
+    finalHours = '00';
+    finalMinutes = String(minutesRemaining).length === 1 ? '0' + String(minutesRemaining): String(minutesRemaining);
+    return finalHours + ':' + finalMinutes;
+  }
+  finalHours = Math.floor(minutesRemaining / MINUTES);
+  finalMinutes = String(minutesRemaining % MINUTES);
   finalHours = String(finalHours).length === 1 ? '0' + String(finalHours): String(finalHours);
   finalMinutes = String(finalMinutes).length === 1 ? '0' + String(finalMinutes): String(finalMinutes);
   // console.log(finalHours + ':' + finalMinutes);
-  return finalTime = finalHours + ':' + finalMinutes;
+  finalTime = finalHours + ':' + finalMinutes;
+  return finalTime;
 
 }
 
-console.log(timeOfDay(0) === "00:00");
-console.log(timeOfDay(-3) === "23:57");
-console.log(timeOfDay(35) === "00:35");
-console.log(timeOfDay(-1437) === "00:03");
-console.log(timeOfDay(3000) === "02:00");
-console.log(timeOfDay(800) === "13:20");
-console.log(timeOfDay(-4231) === "01:29");
+// console.log(timeOfDay(0) === "00:00");
+// console.log(timeOfDay(-3) === "23:57");
+// console.log(timeOfDay(35) === "00:35");
+// console.log(timeOfDay(-1437) === "00:03");
+// console.log(timeOfDay(3000) === "02:00");
+// console.log(timeOfDay(800) === "13:20");
+// console.log(timeOfDay(-4231) === "01:29");
+*/
+/*
+//After Midnight Part 2
+function beforeMidnight(time) {
+  const MINUTES = 60;
+  const HOURS = 24;
+  const MIDNIGHT = MINUTES * HOURS;
+
+  let hours = Number(time.slice(0,2));
+  hours = hours * MINUTES;
+  totalMinutes = hours + Number(time.slice(3)) || MIDNIGHT;
+  return MIDNIGHT - totalMinutes;
+}
+
+console.log(beforeMidnight("12:34") === 686);
+console.log(beforeMidnight("00:00") === 0);
+console.log(beforeMidnight("24:00") === 0);
+
+
+function afterMidnight(time) {
+  const MINUTES = 60;
+  const HOURS = 24;
+  const MIDNIGHT = MINUTES * HOURS;
+
+  let hours = Number(time.slice(0,2));
+  hours = hours * MINUTES
+  let finalTime = hours + Number(time.slice(3));
+  if (MIDNIGHT === finalTime) return 0;
+
+  return hours + Number(time.slice(3));
+}
+
+console.log(afterMidnight("00:00") === 0);
+console.log(afterMidnight("12:34") === 754);
+console.log(afterMidnight("24:00") === 0);
 */
