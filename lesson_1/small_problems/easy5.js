@@ -194,5 +194,56 @@ function average(arr) {
 average([1, 5, 87, 45, 8, 8]);       // 25
 average([9, 47, 23, 95, 16, 52]);    // 40
 */
-
+/*
 //After Midnight (Part 1)
+// Problem
+//   Input: integer representing the number of minutes
+//   Output: time of day in 24 hour time (hh:mm) as a string
+//   Rules: if the input integer is negative the time given in minutes is before midnight. If positive, time is after midnight
+//    - therefore function needs to be able to work with negative and positive ints
+//   Implicit rules: 60 minutes in an hour, 24 hours in a day
+
+// Examples:
+// console.log(timeOfDay(0) === "00:00");
+// console.log(timeOfDay(-3) === "23:57");
+// console.log(timeOfDay(35) === "00:35");
+// console.log(timeOfDay(-1437) === "00:03");
+// console.log(timeOfDay(3000) === "02:00");
+// console.log(timeOfDay(800) === "13:20");
+// console.log(timeOfDay(-4231) === "01:29");
+
+// Algorithm:
+//   - set config variables called minutes set to 60, hours set to 24, and minutesInADay set to minutes * hours;
+//   - get the remainder of the input int divided by minutesInADay
+//   - subract minutesInADay - remainder. 
+//   - divide this result by minutes variable and round down.
+//   - also get the remainder of the subtraction result divided by minutes. 
+//   - the final hour and minutes result will be the sum of the previous two results
+//   - if the remainder is 
+
+function timeOfDay(integer) {
+  let finalTime = '00:00';
+  const MINUTES = 60;
+  const HOURS = 24;
+  const MINUTES_IN_A_DAY = MINUTES * HOURS;
+  if (!integer) return finalTime;
+
+
+  let minutesRemaining = MINUTES_IN_A_DAY - (Math.abs(integer) % MINUTES_IN_A_DAY);
+  let finalHours = Math.floor(minutesRemaining / MINUTES);
+  let finalMinutes = String(minutesRemaining % MINUTES);
+  finalHours = String(finalHours).length === 1 ? '0' + String(finalHours): String(finalHours);
+  finalMinutes = String(finalMinutes).length === 1 ? '0' + String(finalMinutes): String(finalMinutes);
+  // console.log(finalHours + ':' + finalMinutes);
+  return finalTime = finalHours + ':' + finalMinutes;
+
+}
+
+console.log(timeOfDay(0) === "00:00");
+console.log(timeOfDay(-3) === "23:57");
+console.log(timeOfDay(35) === "00:35");
+console.log(timeOfDay(-1437) === "00:03");
+console.log(timeOfDay(3000) === "02:00");
+console.log(timeOfDay(800) === "13:20");
+console.log(timeOfDay(-4231) === "01:29");
+*/
