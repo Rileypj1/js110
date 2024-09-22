@@ -21,7 +21,7 @@ const COORDINATES = {
 }
 
 function displayBoard(board) {
-  console.clear();
+  // console.clear();
   const acrossSpaces = 5;
 
   function displayBorders() {
@@ -59,8 +59,9 @@ function getAvailableSquares(board) {
     };
 
   })
-  return availableSquares.join(', ');
+  return availableSquares.join(',');
 }
+
 
 function promptUser(board) {
   let available = getAvailableSquares(board, COORDINATES);
@@ -85,12 +86,15 @@ function playerChoosesSquare(board) {
 
 function computerChoosesSquare(board) {
   let available = getAvailableSquares(board, COORDINATES).split(',');
+
   let randomIndex = Math.floor(Math.random() * available.length);
   // let keys = Object.keys(COORDINATES);
-  console.log({board});
-  console.log({randomIndex});
-  console.log({available});
-  board[COORDINATES[randomIndex][0]][COORDINATES[randomIndex][1]] = COMPUTER_MARKER;
+
+  let chosenIndex = available[randomIndex];
+  let coordinate = COORDINATES[chosenIndex];
+  console.log({chosenIndex});
+  console.log({coordinate});
+  board[coordinate[0]][coordinate[1]] = COMPUTER_MARKER;
 
 }
 
@@ -101,57 +105,76 @@ function boardFull(board) {
 function someoneWon(board) {
   return !!detectWinner(board);
 }
+function prompt(msg) {
+  console.log(`=> ${msg}`);
+}
 function detectWinner(board) {
   /*
   needs to return the name of the winner or a null value if game was a tie
   a player wins when:
-      1. in board arraythe values of the first index in each nested array is the same:
+      1. in board arraythe values of the same index in each nested array is the same:
         [['X','X','O'],['X','O','X'],['X', 'O', 'O']]
       2. all three values in any nested array are the same
       3. the first value in the first nested, the second value in the second nested, and third val in third nested are the same
       4. the 3rd value in the first nested, the second value in the second nested, the first val in the third nested are the same
   */
- for (let i = 0; i < 1; i += 1) {
-  for (let j = 0; j < 2; j += 1) {
+ for (let j = 0; j < 1; j += 1) {
+  if (!board[0][j + 2]) break;
+    //problem right now is that in the if condition we're comparing ' ' === ' ' in the beginning so that ends the game early
     // first use case, a match down columns  
-    console.log({i}, {j})
-    if (board[i+2] && (board[i][j] === board[i+1][j]) && (board[i][j] === board[i+2][j])) {
-      board[i][j] === HUMAN_MARKER ? console.log('You win!') : console.log('Computer wins!');
-      break;
-    } else if (board[i+2] && (board[i][j] === board[i+1][j+1]) && (board[i][j] === board[i+2][j+2])) {
-      // diagonol starting in top left going down to bottom right
-      board[i][j] === HUMAN_MARKER ? console.log('You win!') : console.log('Computer wins!');
-    } else if (board[i+2] && (board[i][j+2] === board[i+1][j+1]) && (board[i][j] === board[i+2][j])) {
-      // diagonol match starting from top right going down to bottom left
-      board[i][j] === HUMAN_MARKER ? console.log('You win!') : console.log('Computer wins!');
-    }
-  }
- }
+    // we just need to know who won, we don't need to know how--try forEach method
 
+  if (
+    board[j][j].trim() &&
+    (board[j][j] === board[j+1][j]) && 
+    (board[j][j] === board[j+2][j])
+  ) {
+    return board[0][j] === HUMAN_MARKER ? 'Player' : 'Computer';
+  } else if (
+    board[0][j].trim() &&
+    (board[0][j] === board[1][j+1]) && 
+    (board[0][j] === board[2][j+2])
+  ) {
+    // 3rd use case: diagonol starting in top left going down to bottom right
+    return board[0][j] === HUMAN_MARKER ? 'Player' : 'Computer';
+  } else if (
+    board[0][j+2].trim() &&
+    (board[0][j+2] === board[1][j+1]) && 
+    (board[0][j+2] === board[2][j])
+  ) {
+    // 4th use case: diagonol match starting from top right going down to bottom left
+    return board[0][j+2] === HUMAN_MARKER ? 'Player' : 'Computer';
+  }
+}
+
+let acrossWin = null;
+// 2nd use case: all 3 vals the same in nested array
  board.forEach(row => {
   let userWin = row.every(val => val === HUMAN_MARKER);
   let computerWin = row.every(val => val === COMPUTER_MARKER);
-  if (userWin || computerWin) {
-    userWin === true ? console.log('You win!') : console.log('Computer wins!');
+  if (userWin) {
+    acrossWin = 'Player';
+  } else if (computerWin) {
+    acrossWin = 'Computer';
   }
 })
-
+  return acrossWin;
 }
-let board = [['X','O', 'X'],['X','X','O'],['O','X','X']];
-detectWinner(board);
 
-// let board = initializeBoard();
-// displayBoard(board);
 
-// while (true) {
-//   playerChoosesSquare(board);
-//   computerChoosesSquare(board);
-//   displayBoard(board);
+let board = initializeBoard();
+displayBoard(board);
 
-//   if (someoneWon(board) || boardFull(board)) break;
-// }
-// if (someoneWon(board)) {
-//   prompt(`${detectWinner(board)} won!`);
-// } else {
-//   prompt("It's a tie!");
-// }
+while (true) {
+  playerChoosesSquare(board);
+  if (someoneWon(board) || boardFull(board)) break;
+  computerChoosesSquare(board);
+  displayBoard(board);
+
+  if (someoneWon(board) || boardFull(board)) break;
+}
+if (someoneWon(board)) {
+  prompt(`${detectWinner(board)} won!`);
+} else {
+  prompt("It's a tie!");
+}
