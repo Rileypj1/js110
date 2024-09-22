@@ -21,12 +21,13 @@ const COORDINATES = {
 }
 
 function displayBoard(board) {
-  // console.clear();
+  console.clear();
   const acrossSpaces = 5;
 
   function displayBorders() {
     console.log('-'.repeat(acrossSpaces) + '+' + '-'.repeat(acrossSpaces) + '+' + '-'.repeat(acrossSpaces));
   }
+  console.log(`You are ${HUMAN_MARKER}. Computer is ${COMPUTER_MARKER}.`)
   //drawing the board
   console.log('');
   console.log(' '.repeat(acrossSpaces) + '|' + ' '.repeat(acrossSpaces)+ '|');
@@ -92,8 +93,7 @@ function computerChoosesSquare(board) {
 
   let chosenIndex = available[randomIndex];
   let coordinate = COORDINATES[chosenIndex];
-  console.log({chosenIndex});
-  console.log({coordinate});
+
   board[coordinate[0]][coordinate[1]] = COMPUTER_MARKER;
 
 }
@@ -162,19 +162,31 @@ let acrossWin = null;
 }
 
 
-let board = initializeBoard();
-displayBoard(board);
-
 while (true) {
-  playerChoosesSquare(board);
-  if (someoneWon(board) || boardFull(board)) break;
-  computerChoosesSquare(board);
+  let board = initializeBoard();
+
+  while (true) {
+    displayBoard(board);
+
+    playerChoosesSquare(board);
+    if (someoneWon(board) || boardFull(board)) break;
+
+    computerChoosesSquare(board);
+    displayBoard(board);
+
+    if (someoneWon(board) || boardFull(board)) break;
+  }
   displayBoard(board);
 
-  if (someoneWon(board) || boardFull(board)) break;
+  if (someoneWon(board)) {
+    prompt(`${detectWinner(board)} won!`);
+  } else {
+    prompt("It's a tie!");
+  }
+
+  prompt('Play again? (y or n)');
+  let answer = rlSync.question().toLowerCase()[0];
+  if (answer !== 'y') break;
 }
-if (someoneWon(board)) {
-  prompt(`${detectWinner(board)} won!`);
-} else {
-  prompt("It's a tie!");
-}
+
+prompt('Thanks for playing Tic Tac Toe!');
