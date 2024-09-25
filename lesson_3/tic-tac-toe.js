@@ -81,7 +81,15 @@ function joinOr(numArray, separator = ', ',lastWord = 'or') {
 
 function promptUser(board) {
   let available = getAvailableSquares(board, COORDINATES);
-  let square = rlSync.question(`Choose a square with the numbers ${joinOr(available)} (1 is the top left square; 9 is the bottom right square): `);
+  let square = ''
+  while (true) {
+    square = rlSync.question(`Choose a square with the numbers ${joinOr(available)} (1 is the top left square; 9 is the bottom right square): `);
+    if (!available.includes(square)) {
+      prompt('Looks like you didn\'t choose an available square.')
+    } else {
+      break;
+    }
+  }
 
   return square;
 }
@@ -110,7 +118,6 @@ function computerChoosesSquare(board) {
   let coordinate = COORDINATES[chosenIndex];
 
   board[coordinate[0]][coordinate[1]] = COMPUTER_MARKER;
-
 }
 
 function boardFull(board) {
@@ -120,9 +127,11 @@ function boardFull(board) {
 function someoneWon(board) {
   return !!detectWinner(board);
 }
+
 function prompt(msg) {
   console.log(`=> ${msg}`);
 }
+
 function detectWinner(board) {
   /*
   needs to return the name of the winner or a null value if game was a tie
@@ -133,56 +142,56 @@ function detectWinner(board) {
       3. the first value in the first nested, the second value in the second nested, and third val in third nested are the same
       4. the 3rd value in the first nested, the second value in the second nested, the first val in the third nested are the same
   */
- for (let j = 0; j < 1; j += 1) {
-  if (!board[0][j + 2]) break;
-    //problem right now is that in the if condition we're comparing ' ' === ' ' in the beginning so that ends the game early
-    // first use case, a match down columns  
-    // we just need to know who won, we don't need to know how--try forEach method
+ for (let j = 0; j <= 2; j += 1) {
+    // first win scenario, a match down columns  
+    if (
+      board[0][j].trim() &&
+      (board[0][j] === board[1][j]) && 
+      (board[0][j] === board[2][j])
+    ) {
+      return board[0][j] === HUMAN_MARKER ? 'Player' : 'Computer';
+    } 
+  }
 
+   // 2nd win scenario: diagonol starting in top left going down to bottom right
   if (
-    board[j][j].trim() &&
-    (board[j][j] === board[j+1][j]) && 
-    (board[j][j] === board[j+2][j])
+    board[0][0].trim() &&
+    (board[0][0] === board[1][1]) && 
+    (board[0][0] === board[2][2])
   ) {
     return board[0][j] === HUMAN_MARKER ? 'Player' : 'Computer';
-  } else if (
-    board[0][j].trim() &&
-    (board[0][j] === board[1][j+1]) && 
-    (board[0][j] === board[2][j+2])
+  } 
+
+   // 3rd win scenario: diagonol match starting from top right going down to bottom left
+  if (
+    board[0][2].trim() &&
+    (board[0][2] === board[1][1]) && 
+    (board[0][2] === board[2][0])
   ) {
-    // 3rd use case: diagonol starting in top left going down to bottom right
-    return board[0][j] === HUMAN_MARKER ? 'Player' : 'Computer';
-  } else if (
-    board[0][j+2].trim() &&
-    (board[0][j+2] === board[1][j+1]) && 
-    (board[0][j+2] === board[2][j])
-  ) {
-    // 4th use case: diagonol match starting from top right going down to bottom left
     return board[0][j+2] === HUMAN_MARKER ? 'Player' : 'Computer';
   }
-}
 
-let acrossWin = null;
-// 2nd use case: all 3 vals the same in nested array
- board.forEach(row => {
-  let userWin = row.every(val => val === HUMAN_MARKER);
-  let computerWin = row.every(val => val === COMPUTER_MARKER);
-  if (userWin) {
-    acrossWin = 'Player';
-  } else if (computerWin) {
-    acrossWin = 'Computer';
-  }
-})
+  // last win scenario: all 3 vals the same in nested array
+  let acrossWin = null;
+  board.forEach(row => {
+    let userWin = row.every(val => val === HUMAN_MARKER);
+    let computerWin = row.every(val => val === COMPUTER_MARKER);
+    if (userWin) {
+      acrossWin = 'Player';
+    } else if (computerWin) {
+      acrossWin = 'Computer';
+    }
+  })
   return acrossWin;
 }
 
 function displayScore(scores, result, winner) {
   if (result === 'winner') {
     prompt(`${winner} won this round!`);
-    prompt(`You have ${scores.Player} points. Computer has ${scores.Computer} points.`);
+    prompt(`You have ${scores.Player} ${scores.Player === 1 ? 'point': 'points'}. Computer has ${scores.Computer} ${scores.Computer === 1 ? 'point': 'points'}.`);
   } else {
     prompt("It's a tie!");
-    prompt(`You have ${scores.Player} points. Computer has ${scores.Computer} points.`);
+    prompt(`You have ${scores.Player} ${scores.Player === 1 ? 'point': 'points'}. Computer has ${scores.Computer} ${scores.Computer === 1 ? 'point': 'points'}.`);
   }
 }
 
@@ -205,9 +214,11 @@ while (true) {
         winner = detectWinner(board)
         gameScore[winner] += 1;
         result = 'winner';
+        displayBoard(board);
         break;
       } else if (boardFull(board)) {
-        result = 'tie'
+        result = 'tie';
+        displayBoard(board);
         break;
       }
     
@@ -215,12 +226,14 @@ while (true) {
       displayBoard(board);
 
       if (someoneWon(board)) {
-        let winner = detectWinner(board)
+        winner = detectWinner(board)
         gameScore[winner] += 1;
         result = 'winner';
+        displayBoard(board);
         break;
       } else if (boardFull(board)) {
         result = 'tie'
+        displayBoard(board);
         break;
       }
 
