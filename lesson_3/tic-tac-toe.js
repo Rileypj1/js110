@@ -7,6 +7,7 @@ const rlSync = require('readline-sync');
 const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = 'O';
+const GAMES_TO_WIN = 5;
 
 const COORDINATES = {
   1: [0, 0],
@@ -60,13 +61,27 @@ function getAvailableSquares(board) {
     };
 
   })
-  return availableSquares.join(',');
+  return availableSquares;
+}
+
+function joinOr(numArray, separator = ', ',lastWord = 'or') {
+  let finalString = '';
+  for (num of numArray) {
+    if (numArray.length > 1 && num === numArray[numArray.length-1]){
+      finalString += (lastWord + ' ' + num)
+    } else if (numArray.length > 2) {
+      finalString += (num += separator);
+    } else {
+      finalString += num + ' '
+    }
+  }
+  return finalString;
 }
 
 
 function promptUser(board) {
   let available = getAvailableSquares(board, COORDINATES);
-  let square = rlSync.question(`Choose a square with the numbers ${available} (1 is the top left square; 9 is the bottom right square): `);
+  let square = rlSync.question(`Choose a square with the numbers ${joinOr(available)} (1 is the top left square; 9 is the bottom right square): `);
 
   return square;
 }
@@ -86,7 +101,7 @@ function playerChoosesSquare(board) {
 }
 
 function computerChoosesSquare(board) {
-  let available = getAvailableSquares(board, COORDINATES).split(',');
+  let available = getAvailableSquares(board, COORDINATES)
 
   let randomIndex = Math.floor(Math.random() * available.length);
   // let keys = Object.keys(COORDINATES);
@@ -161,29 +176,65 @@ let acrossWin = null;
   return acrossWin;
 }
 
+function displayScore(scores, result, winner) {
+  if (result === 'winner') {
+    prompt(`${winner} won this round!`);
+    prompt(`You have ${scores.Player} points. Computer has ${scores.Computer} points.`);
+  } else {
+    prompt("It's a tie!");
+    prompt(`You have ${scores.Player} points. Computer has ${scores.Computer} points.`);
+  }
+}
 
 while (true) {
   let board = initializeBoard();
+  let gameScore = {
+    'Player': 0,
+    'Computer': 0
+  }
+  let winner = ''
+  while (gameScore.Player < GAMES_TO_WIN && gameScore.Computer < GAMES_TO_WIN) {
+    board = initializeBoard();
+    let result = '';
+    while (true) {
+      displayBoard(board);
 
-  while (true) {
-    displayBoard(board);
+      playerChoosesSquare(board);
 
-    playerChoosesSquare(board);
-    if (someoneWon(board) || boardFull(board)) break;
+      if (someoneWon(board)) {
+        winner = detectWinner(board)
+        gameScore[winner] += 1;
+        result = 'winner';
+        break;
+      } else if (boardFull(board)) {
+        result = 'tie'
+        break;
+      }
+    
+      computerChoosesSquare(board);
+      displayBoard(board);
 
-    computerChoosesSquare(board);
-    displayBoard(board);
+      if (someoneWon(board)) {
+        let winner = detectWinner(board)
+        gameScore[winner] += 1;
+        result = 'winner';
+        break;
+      } else if (boardFull(board)) {
+        result = 'tie'
+        break;
+      }
 
-    if (someoneWon(board) || boardFull(board)) break;
+    }
+    displayScore(gameScore, result, winner);
+    if (gameScore.Player === GAMES_TO_WIN || gameScore.Computer === GAMES_TO_WIN) {
+      break;
+    } 
+    prompt('Continue playing? (y or n)');
+    let keepPlaying = rlSync.question()[0];
+    if (keepPlaying !== 'y') break;
   }
   displayBoard(board);
-
-  if (someoneWon(board)) {
-    prompt(`${detectWinner(board)} won!`);
-  } else {
-    prompt("It's a tie!");
-  }
-
+  prompt(`${winner} won the game!`)
   prompt('Play again? (y or n)');
   let answer = rlSync.question().toLowerCase()[0];
   if (answer !== 'y') break;

@@ -153,3 +153,74 @@ sumOfSums([1, 5, 7, 3]);     // (1) + (1 + 5) + (1 + 5 + 7) + (1 + 5 + 7 + 3) --
 sumOfSums([4]);              // 4
 sumOfSums([1, 2, 3, 4, 5]);  // 35
 */
+/*
+// Grocery List
+function buyFruit(groceries) {
+  let flattenedArr = []
+  groceries.forEach(fruit => {
+    let quantity = fruit[1];
+    let nameOfFruit = fruit[0];
+    for (let i = 1; i <= quantity; i+=1) {
+      flattenedArr.push(nameOfFruit);
+    }
+  })
+  console.log(flattenedArr);
+  return flattenedArr;
+}
+
+buyFruit([['apple', 3], ['orange', 1], ['banana', 2]]);
+// returns ["apple", "apple", "apple", "orange", "banana", "banana"]
+*/
+/*
+//Inventory Item Transactions
+let transactions = [ { id: 101, movement: 'in',  quantity:  5 },
+  { id: 105, movement: 'in',  quantity: 10 },
+  { id: 102, movement: 'out', quantity: 17 },
+  { id: 101, movement: 'in',  quantity: 12 },
+  { id: 103, movement: 'out', quantity: 20 },
+  { id: 102, movement: 'out', quantity: 15 },
+  { id: 105, movement: 'in',  quantity: 25 },
+  { id: 101, movement: 'out', quantity: 18 },
+  { id: 102, movement: 'in',  quantity: 22 },
+  { id: 103, movement: 'out', quantity: 15 }, ];
+
+function transactionsFor(itemID, array) {
+  console.log(array.filter(nested => nested['id'] === itemID));
+}
+transactionsFor(101, transactions);
+// returns
+// [ { id: 101, movement: "in",  quantity:  5 },
+//   { id: 101, movement: "in",  quantity: 12 },
+//   { id: 101, movement: "out", quantity: 18 }, ]
+*/
+/*
+//Inventory Item Availability
+let transactions = [ { id: 101, movement: 'in',  quantity:  5 },
+  { id: 105, movement: 'in',  quantity: 10 },
+  { id: 102, movement: 'out', quantity: 17 },
+  { id: 101, movement: 'in',  quantity: 12 },
+  { id: 103, movement: 'out', quantity: 20 },
+  { id: 102, movement: 'out', quantity: 15 },
+  { id: 105, movement: 'in',  quantity: 25 },
+  { id: 101, movement: 'out', quantity: 18 },
+  { id: 102, movement: 'in',  quantity: 22 },
+  { id: 103, movement: 'out', quantity: 15 }, ];
+
+function isItemAvailable(itemID, array) {
+  let givenItem = array.filter(nested => nested['id'] === itemID);
+  let moneyIn = 0;
+  let moneyOut = 0;
+  givenItem.forEach(txn => {
+    if(txn['movement'] === 'in') {
+      moneyIn += txn['quantity'];
+    } else if (txn['movement'] === 'out') {
+      moneyOut += txn['quantity'];
+    }
+  });
+  console.log( (moneyIn - moneyOut) > 0);
+}
+
+isItemAvailable(101, transactions);     // false
+isItemAvailable(103, transactions);     // false
+isItemAvailable(105, transactions);     // true
+*/
