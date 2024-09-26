@@ -56,7 +56,9 @@ function getAvailableSquares(board) {
   let keys = Object.keys(COORDINATES);
   let availableSquares = [];
   keys.forEach(square => {
-    if(!board[COORDINATES[square][0]][COORDINATES[square][1]].trim()){
+    let row = COORDINATES[square][0];
+    let column = COORDINATES[square][1];
+    if(!board[row][column].trim()){
       availableSquares.push(square);
     };
 
@@ -108,16 +110,41 @@ function playerChoosesSquare(board) {
   }
 }
 
+// findAtRiskSquares
+/*
+input: the board array that contains nested arrays per row
+output: array of squares that have 2 preceding human markers in a row
+Other rules: if there's no at risk squares, the computer should pick a random available square
+Data Structure:
+  - the input board is an array of nested arrays: [['X','X','O'],['X','O','X'],['X', 'O', 'O']]
+  - will need to compare markers across all nested arrays. note: each nested array is a row on the 3x3 tictactoe board
+Algo:
+  - create empty array atRisk 
+  - check the first value in each nested array
+    - if rows (1,2) or rows (2,3) have human markers, push the square that would complete tictactoe to atRisk array if that square is empty (i.e., if in available array)
+  - within each nested array, check if indices (0,1) or (1,2) have human markers
+    - follow the same rule as step 1 subpoint
+  - in row 1 (the first nested array),check if index 0 is a human marker and if row 2 index 1 is a human marker, or row 2 index 1 and row 3 index 2
+  - do the same but for opposite diagonal:check row 1 index 2 and row 2 index 1 or row 2 index 1 and row 3 index 0
+    - follow the same rule as step 1 subpoint
+  - return atRisk array;
+*/
+function findAtRiskSquares(board, available) {
+  let 
+}
+
 function computerChoosesSquare(board) {
   let available = getAvailableSquares(board, COORDINATES)
+  // let atRiskSquares = findAtRiskSquares(board, available);
 
   let randomIndex = Math.floor(Math.random() * available.length);
   // let keys = Object.keys(COORDINATES);
 
   let chosenIndex = available[randomIndex];
   let coordinate = COORDINATES[chosenIndex];
-
-  board[coordinate[0]][coordinate[1]] = COMPUTER_MARKER;
+  let row = coordinate[0];
+  let column = coordinate[1];
+  board[row][column] = COMPUTER_MARKER;
 }
 
 function boardFull(board) {
@@ -136,7 +163,7 @@ function detectWinner(board) {
   /*
   needs to return the name of the winner or a null value if game was a tie
   a player wins when:
-      1. in board arraythe values of the same index in each nested array is the same:
+      1. in board array, the values of the same index in each nested array is the same:
         [['X','X','O'],['X','O','X'],['X', 'O', 'O']]
       2. all three values in any nested array are the same
       3. the first value in the first nested, the second value in the second nested, and third val in third nested are the same
@@ -195,6 +222,7 @@ function displayScore(scores, result, winner) {
   }
 }
 
+// game play logic
 while (true) {
   let board = initializeBoard();
   let gameScore = {
@@ -247,7 +275,9 @@ while (true) {
     if (keepPlaying !== 'y') break;
   }
   displayBoard(board);
-  prompt(`${winner} won the game!`)
+  if (gameScore.Player === GAMES_TO_WIN || gameScore.Computer === GAMES_TO_WIN) {
+    prompt(`${winner} won the game!`);
+  }
   prompt('Play again? (y or n)');
   let answer = rlSync.question().toLowerCase()[0];
   if (answer !== 'y') break;
