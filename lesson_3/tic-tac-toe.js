@@ -109,7 +109,7 @@ function playerChoosesSquare(board) {
     };
   }
 }
-
+// const WINNING = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]];
 // findAtRiskSquares
 /*
 input: the board array that contains nested arrays per row
@@ -130,22 +130,66 @@ Algo:
   - return atRisk array;
 */
 function findAtRiskSquares(board, available) {
-  let 
+  let atRisk = [];
+  for (let i = 0; i <= 2; i += 1) {
+    let columnMatch = [board[0][i], board[1][i], board[2][i]];
+    let rowMatch = [board[i][0], board[i][1], board[i][2]];
+    // column level risk check
+    if (columnMatch[0] === HUMAN_MARKER && columnMatch[0] === columnMatch[1] && columnMatch[2] === ' ') {
+      let squareNumber = Object.entries(COORDINATES).find(([square, coord]) => coord[0] === 2 && coord[1] === i)[0][0];
+      atRisk.push(squareNumber);
+    } else if (columnMatch[0] === ' ' && columnMatch[1] === HUMAN_MARKER && columnMatch[2] === HUMAN_MARKER) {
+      let squareNumber = Object.entries(COORDINATES).find(([square, coord]) => coord[0] === 0 && coord[1] === i)[0][0];
+      atRisk.push(squareNumber); 
+    }
+
+    //row level risk check
+    if (rowMatch[0] === HUMAN_MARKER && rowMatch[0] === rowMatch[1] && rowMatch[2] === ' ') {
+      let squareNumber = Object.entries(COORDINATES).find(([square, coord]) => coord[0] == i && coord[1] === 2)[0][0];
+      atRisk.push(squareNumber);
+    } else if (rowMatch[0] === ' ' && rowMatch[1] === HUMAN_MARKER && rowMatch[2] === rowMatch[1]) {
+      let squareNumber = Object.entries(COORDINATES).find(([square, coord]) => coord[0] == i && coord[1] === 0)[0][0];
+      atRisk.push(squareNumber);
+    }
+  }
+  
+  // diaganol at risk section
+  let topLeft = board[0][0];
+  let middle = board[1][1];
+  let bottomRight = board[2][2];
+  
+  let topRight = board[0][2];
+  let bottomLeft = board[2][0];
+
+  if (topRight === HUMAN_MARKER && middle === HUMAN_MARKER && bottomLeft ===  ' ') {
+    atRisk.push('7');
+  } else if (topRight === ' ' && middle === HUMAN_MARKER && bottomLeft === HUMAN_MARKER) {
+    atRisk.push('3');
+  } else if (topLeft === HUMAN_MARKER && middle === HUMAN_MARKER && bottomRight === ' ') {
+    atRisk.push('9');
+  } else if (topLeft === ' ' && middle === HUMAN_MARKER && bottomRight === HUMAN_MARKER) {
+    atRisk.push('1');
+  }
+
+  // remove duplicate values from array
+  atRisk = atRisk.filter((coord, idx) => atRisk.indexOf(coord) === idx);
+  return atRisk;
 }
 
 function computerChoosesSquare(board) {
-  let available = getAvailableSquares(board, COORDINATES)
-  // let atRiskSquares = findAtRiskSquares(board, available);
+  let atRiskSquares = findAtRiskSquares(board, available);
 
-  let randomIndex = Math.floor(Math.random() * available.length);
-  // let keys = Object.keys(COORDINATES);
+  let available = getAvailableSquares(board, COORDINATES);
 
-  let chosenIndex = available[randomIndex];
+  let randomIndex = atRiskSquares.length === 0 ? Math.floor(Math.random() * available.length) : Math.floor(Math.random() * atRiskSquares.length);
+
+  let chosenIndex = atRiskSquares.length === 0 ? available[randomIndex] : atRiskSquares[randomIndex];
   let coordinate = COORDINATES[chosenIndex];
   let row = coordinate[0];
   let column = coordinate[1];
   board[row][column] = COMPUTER_MARKER;
-}
+  }
+
 
 function boardFull(board) {
   return board.every(row => row.filter(val => val.trim()).length === row.length);
