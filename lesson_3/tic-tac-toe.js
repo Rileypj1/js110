@@ -129,29 +129,45 @@ Algo:
     - follow the same rule as step 1 subpoint
   - return atRisk array;
 */
-function findAtRiskSquares(board, available) {
+function findAtRiskSquares(board, marker) {
   let atRisk = [];
   for (let i = 0; i <= 2; i += 1) {
+
+    //column level check
     let columnMatch = [board[0][i], board[1][i], board[2][i]];
-    let rowMatch = [board[i][0], board[i][1], board[i][2]];
-    // column level risk check
-    if (columnMatch[0] === HUMAN_MARKER && columnMatch[0] === columnMatch[1] && columnMatch[2] === ' ') {
-      let squareNumber = Object.entries(COORDINATES).find(([square, coord]) => coord[0] === 2 && coord[1] === i)[0][0];
+    let missingFromFilterColumn = [];
+    let filteredColumnMatch = columnMatch.filter((val, idx) => {
+      if (val === ' '){
+        missingFromFilterColumn.push(idx);
+      }
+      return val === marker;
+    });
+    console.log({filteredColumnMatch});
+    console.log({missingFromFilterColumn})
+    // the index in the missingFromfilter array needs to match the coord
+    if (filteredColumnMatch.length === 2 && missingFromFilterColumn.length === 1) {
+      let squareNumber = Object.entries(COORDINATES).find(([square, coord]) => coord[0] === missingFromFilterColumn[0] && coord[1] === i)[0];
+      console.log({squareNumber})
       atRisk.push(squareNumber);
-    } else if (columnMatch[0] === ' ' && columnMatch[1] === HUMAN_MARKER && columnMatch[2] === HUMAN_MARKER) {
-      let squareNumber = Object.entries(COORDINATES).find(([square, coord]) => coord[0] === 0 && coord[1] === i)[0][0];
-      atRisk.push(squareNumber); 
     }
 
-    //row level risk check
-    if (rowMatch[0] === HUMAN_MARKER && rowMatch[0] === rowMatch[1] && rowMatch[2] === ' ') {
-      let squareNumber = Object.entries(COORDINATES).find(([square, coord]) => coord[0] == i && coord[1] === 2)[0][0];
-      atRisk.push(squareNumber);
-    } else if (rowMatch[0] === ' ' && rowMatch[1] === HUMAN_MARKER && rowMatch[2] === rowMatch[1]) {
-      let squareNumber = Object.entries(COORDINATES).find(([square, coord]) => coord[0] == i && coord[1] === 0)[0][0];
+    // row level check
+    let rowMatch = [board[i][0], board[i][1], board[i][2]];
+    let missingFromFilterRow = [];
+    let filteredRowMatch = rowMatch.filter((val, idx) => {
+      if (val === ' ') {
+        missingFromFilterRow.push(idx);
+      }
+      return val === marker;
+    });
+
+    if (filteredRowMatch.length === 2 && missingFromFilterRow.length === 1) {
+      let squareNumber = Object.entries(COORDINATES).find(([square, coord]) => coord[0] === i && coord[1] === missingFromFilterRow[0])[0];
+      console.log({squareNumber});
+
       atRisk.push(squareNumber);
     }
-  }
+
   
   // diaganol at risk section
   let topLeft = board[0][0];
@@ -161,24 +177,28 @@ function findAtRiskSquares(board, available) {
   let topRight = board[0][2];
   let bottomLeft = board[2][0];
 
-  if (topRight === HUMAN_MARKER && middle === HUMAN_MARKER && bottomLeft ===  ' ') {
+  if (topRight === marker && middle === marker && bottomLeft ===  ' ') {
     atRisk.push('7');
-  } else if (topRight === ' ' && middle === HUMAN_MARKER && bottomLeft === HUMAN_MARKER) {
+  } else if (topRight === ' ' && middle === marker && bottomLeft === marker) {
     atRisk.push('3');
-  } else if (topLeft === HUMAN_MARKER && middle === HUMAN_MARKER && bottomRight === ' ') {
+  } else if (topLeft === marker && middle === marker && bottomRight === ' ') {
     atRisk.push('9');
-  } else if (topLeft === ' ' && middle === HUMAN_MARKER && bottomRight === HUMAN_MARKER) {
+  } else if (topLeft === ' ' && middle === marker && bottomRight === marker) {
     atRisk.push('1');
   }
-
+  }
   // remove duplicate values from array
   atRisk = atRisk.filter((coord, idx) => atRisk.indexOf(coord) === idx);
   return atRisk;
 }
 
-function computerChoosesSquare(board) {
-  let atRiskSquares = findAtRiskSquares(board, available);
 
+function computerChoosesSquare(board) {
+  let atRiskSquares = findAtRiskSquares(board, COMPUTER_MARKER);
+  if (atRiskSquares.length === 0) {
+    atRiskSquares = findAtRiskSquares(board, HUMAN_MARKER);
+  }
+  console.log({atRiskSquares})
   let available = getAvailableSquares(board, COORDINATES);
 
   let randomIndex = atRiskSquares.length === 0 ? Math.floor(Math.random() * available.length) : Math.floor(Math.random() * atRiskSquares.length);
@@ -230,7 +250,7 @@ function detectWinner(board) {
     (board[0][0] === board[1][1]) && 
     (board[0][0] === board[2][2])
   ) {
-    return board[0][j] === HUMAN_MARKER ? 'Player' : 'Computer';
+    return board[0][0] === HUMAN_MARKER ? 'Player' : 'Computer';
   } 
 
    // 3rd win scenario: diagonol match starting from top right going down to bottom left
@@ -239,7 +259,7 @@ function detectWinner(board) {
     (board[0][2] === board[1][1]) && 
     (board[0][2] === board[2][0])
   ) {
-    return board[0][j+2] === HUMAN_MARKER ? 'Player' : 'Computer';
+    return board[0][2] === HUMAN_MARKER ? 'Player' : 'Computer';
   }
 
   // last win scenario: all 3 vals the same in nested array
@@ -328,3 +348,4 @@ while (true) {
 }
 
 prompt('Thanks for playing Tic Tac Toe!');
+
