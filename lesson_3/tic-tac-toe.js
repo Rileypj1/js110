@@ -129,64 +129,27 @@ Algo:
     - follow the same rule as step 1 subpoint
   - return atRisk array;
 */
+// pass in all coordinates with their key value pair as the inputs--that way you have the square number and the [row,col] already at the beginning 
+
 function findAtRiskSquares(board, marker) {
   let atRisk = [];
-  for (let i = 0; i <= 2; i += 1) {
-
-    //column level check
-    let columnMatch = [board[0][i], board[1][i], board[2][i]];
-    let missingFromFilterColumn = [];
-    let filteredColumnMatch = columnMatch.filter((val, idx) => {
-      if (val === ' '){
-        missingFromFilterColumn.push(idx);
+  const WINNING = [[1,2,3],[4,5,6],[7,8,9],[1,4,7],[2,5,8],[3,6,9],[1,5,9],[3,5,7]];
+  WINNING.forEach((combo) => {
+    let blankValue = []
+    let filtered = combo.filter((val) => {
+      let boardVal = COORDINATES[val];
+      let row = boardVal[0];
+      let col = boardVal[1]
+      if (board[row][col] === ' '){
+        blankValue.push(val)
       }
-      return val === marker;
-    });
-    console.log({filteredColumnMatch});
-    console.log({missingFromFilterColumn})
-    // the index in the missingFromfilter array needs to match the coord
-    if (filteredColumnMatch.length === 2 && missingFromFilterColumn.length === 1) {
-      let squareNumber = Object.entries(COORDINATES).find(([square, coord]) => coord[0] === missingFromFilterColumn[0] && coord[1] === i)[0];
-      console.log({squareNumber})
-      atRisk.push(squareNumber);
+      return board[row][col] === marker
+    })
+
+    if (filtered.length === 2 && blankValue.length === 1) {
+      atRisk.push(blankValue[0])
     }
-
-    // row level check
-    let rowMatch = [board[i][0], board[i][1], board[i][2]];
-    let missingFromFilterRow = [];
-    let filteredRowMatch = rowMatch.filter((val, idx) => {
-      if (val === ' ') {
-        missingFromFilterRow.push(idx);
-      }
-      return val === marker;
-    });
-
-    if (filteredRowMatch.length === 2 && missingFromFilterRow.length === 1) {
-      let squareNumber = Object.entries(COORDINATES).find(([square, coord]) => coord[0] === i && coord[1] === missingFromFilterRow[0])[0];
-      console.log({squareNumber});
-
-      atRisk.push(squareNumber);
-    }
-
-  
-  // diaganol at risk section
-  let topLeft = board[0][0];
-  let middle = board[1][1];
-  let bottomRight = board[2][2];
-  
-  let topRight = board[0][2];
-  let bottomLeft = board[2][0];
-
-  if (topRight === marker && middle === marker && bottomLeft ===  ' ') {
-    atRisk.push('7');
-  } else if (topRight === ' ' && middle === marker && bottomLeft === marker) {
-    atRisk.push('3');
-  } else if (topLeft === marker && middle === marker && bottomRight === ' ') {
-    atRisk.push('9');
-  } else if (topLeft === ' ' && middle === marker && bottomRight === marker) {
-    atRisk.push('1');
-  }
-  }
+  })
   // remove duplicate values from array
   atRisk = atRisk.filter((coord, idx) => atRisk.indexOf(coord) === idx);
   return atRisk;
@@ -195,15 +158,25 @@ function findAtRiskSquares(board, marker) {
 
 function computerChoosesSquare(board) {
   let atRiskSquares = findAtRiskSquares(board, COMPUTER_MARKER);
-  if (atRiskSquares.length === 0) {
-    atRiskSquares = findAtRiskSquares(board, HUMAN_MARKER);
+  let chosenIndex = 0;
+  let randomIndex = 0;
+
+  if (atRiskSquares.length > 0) {
+    randomIndex = Math.floor(Math.random() * atRiskSquares.length);
+    chosenIndex = atRiskSquares[randomIndex];
+  } else {
+    atRiskSquares = findAtRiskSquares(board, HUMAN_MARKER)
   }
-  console.log({atRiskSquares})
-  let available = getAvailableSquares(board, COORDINATES);
 
-  let randomIndex = atRiskSquares.length === 0 ? Math.floor(Math.random() * available.length) : Math.floor(Math.random() * atRiskSquares.length);
+  if(atRiskSquares.length > 0) {
+    randomIndex = Math.floor(Math.random() * atRiskSquares.length);
+    chosenIndex = atRiskSquares[randomIndex];
+  } else {
+    let available = getAvailableSquares(board, COORDINATES);
+    randomIndex = Math.floor(Math.random() * available.length)
+    chosenIndex = available.includes('5') ? 5 : available[randomIndex];
+  }
 
-  let chosenIndex = atRiskSquares.length === 0 ? available[randomIndex] : atRiskSquares[randomIndex];
   let coordinate = COORDINATES[chosenIndex];
   let row = coordinate[0];
   let column = coordinate[1];
