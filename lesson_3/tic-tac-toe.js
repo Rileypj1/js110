@@ -320,20 +320,14 @@ while (true) {
     if (gameScore.Player === GAMES_TO_WIN || gameScore.Computer === GAMES_TO_WIN) {
       break;
     }
- 
 
-    // prompt('Continue playing? (y or n)');
-    // let keepPlaying = rlSync.question()[0];
-    // while (!['y','n'].includes(keepPlaying.toLowerCase())) {
-    //   prompt('Looks like we didn\'t understand. Play again? (y or n) ')
-    //   try {
-    //     keepPlaying = rlSync.question()[0].toLowerCase()
-    //   } catch (error) {
-    //     prompt('Please enter a valid response (y or n) ')
-    //     keepPlaying = rlSync.question()[0].toLowerCase();
-    //   }
-    // }
-      
+    prompt('Continue playing? (y or n)');
+    let keepPlaying = rlSync.question()[0];
+
+    while (!keepPlaying && !['y','n'].includes(keepPlaying)) {
+      prompt('Looks like we didn\'t understand. Play again? (y or n) ')
+      keepPlaying = rlSync.question()[0];
+    } 
     
     if (keepPlaying.toLowerCase() !== 'y') break;
   }
@@ -342,12 +336,13 @@ while (true) {
     prompt(`${winner} won the game!`);
   }
   prompt('Play again? (y or n)');
-  let answer = rlSync.question().toLowerCase()[0];
-  while (!['y','n'].includes(answer.toLowerCase())) {
+  let answer = rlSync.question()[0];
+
+  while (!answer && !['y','n'].includes(answer)) {
     prompt('Looks like wwe did\'t understand. Play again? (y or n) ')
-    answer = rlSync.question()[0].toLowerCase()
+    answer = rlSync.question()[0];
   }
-  if (answer !== 'y') break;
+  if (answer.toLowerCase() !== 'y') break;
 }
 
 prompt('Thanks for playing Tic Tac Toe!');
