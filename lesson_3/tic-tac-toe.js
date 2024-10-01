@@ -8,6 +8,15 @@ const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = 'O';
 const GAMES_TO_WIN = 5;
+const FIRST_PLAYER = ['player', 'computer', 'choose'];
+// three options the user can choose from to go first. the user can select themselves, the computer, or have the program choose which player goes first. 
+// this selection should happen at the start of the game
+// Algo:
+// 1. Player is prompted with three options from FIRST_PLAYER array to select who should go first. The user input is saved to a variable whoGoesFirst
+// 2. If 'player' is selected, the order of functions on who chooses the first square should start with player 
+// 3. if 'computer', the order is switched from step 2.
+// 4. otherwise, if 'choose' is selected, a random choice is made by the code that would produce either 0 or 1, which would then be index used to select from FIRST_PLAYER
+//   - based on the choice, either step 2 or 3 is followed
 
 const COORDINATES = {
   1: [0, 0],
@@ -259,6 +268,19 @@ function displayScore(scores, result, winner) {
   }
 }
 
+function chooseSquare(board, current) {
+  if (current === 'Player') {
+    playerChoosesSquare(board);
+  } else if (current === 'Computer') {
+    computerChoosesSquare(board);
+  }
+}
+
+function alternatePlayer(current) {
+  let newCurrent = current === 'Player' ? 'Computer' : 'Player';
+  return newCurrent;
+}
+
 // game play logic
 while (true) {
   let board = initializeBoard();
@@ -270,10 +292,16 @@ while (true) {
   while (gameScore.Player < GAMES_TO_WIN && gameScore.Computer < GAMES_TO_WIN) {
     board = initializeBoard();
     let result = '';
+    let whoGoesFirst = rlSync.question(`Who should move first? ${joinOr(FIRST_PLAYER)}? `).toLowerCase();
+    if (whoGoesFirst === 'choose') {
+      let rand = Math.floor(Math.random() * 2)
+      whoGoesFirst = FIRST_PLAYER[rand];
+    }
+    let currentPlayer = whoGoesFirst.slice(0,1).toUpperCase() + whoGoesFirst.slice(1);
     while (true) {
       displayBoard(board);
-
-      playerChoosesSquare(board);
+      chooseSquare(board, currentPlayer)
+      currentPlayer = alternatePlayer(currentPlayer);
 
       if (someoneWon(board)) {
         winner = detectWinner(board)
@@ -286,30 +314,28 @@ while (true) {
         displayBoard(board);
         break;
       }
-    
-      computerChoosesSquare(board);
-      displayBoard(board);
-
-      if (someoneWon(board)) {
-        winner = detectWinner(board)
-        gameScore[winner] += 1;
-        result = 'winner';
-        displayBoard(board);
-        break;
-      } else if (boardFull(board)) {
-        result = 'tie'
-        displayBoard(board);
-        break;
-      }
 
     }
     displayScore(gameScore, result, winner);
     if (gameScore.Player === GAMES_TO_WIN || gameScore.Computer === GAMES_TO_WIN) {
       break;
-    } 
-    prompt('Continue playing? (y or n)');
-    let keepPlaying = rlSync.question()[0];
-    if (keepPlaying !== 'y') break;
+    }
+ 
+
+    // prompt('Continue playing? (y or n)');
+    // let keepPlaying = rlSync.question()[0];
+    // while (!['y','n'].includes(keepPlaying.toLowerCase())) {
+    //   prompt('Looks like we didn\'t understand. Play again? (y or n) ')
+    //   try {
+    //     keepPlaying = rlSync.question()[0].toLowerCase()
+    //   } catch (error) {
+    //     prompt('Please enter a valid response (y or n) ')
+    //     keepPlaying = rlSync.question()[0].toLowerCase();
+    //   }
+    // }
+      
+    
+    if (keepPlaying.toLowerCase() !== 'y') break;
   }
   displayBoard(board);
   if (gameScore.Player === GAMES_TO_WIN || gameScore.Computer === GAMES_TO_WIN) {
@@ -317,6 +343,10 @@ while (true) {
   }
   prompt('Play again? (y or n)');
   let answer = rlSync.question().toLowerCase()[0];
+  while (!['y','n'].includes(answer.toLowerCase())) {
+    prompt('Looks like wwe did\'t understand. Play again? (y or n) ')
+    answer = rlSync.question()[0].toLowerCase()
+  }
   if (answer !== 'y') break;
 }
 
