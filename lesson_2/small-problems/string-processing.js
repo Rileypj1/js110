@@ -93,3 +93,39 @@ function swapCase(str) {
 swapCase('CamelCase');              // "cAMELcASE"
 swapCase('Tonight on XYZ-TV');      // "tONIGHT ON xyz-tv"
 */
+/*
+// Staggered Caps Part 1 & 2
+function staggeredCase(str) {
+  let strArray = str.split().map((word) => {
+    let staggeredWord = ''
+    let counter = 0
+    for (let i = 0; i < word.length; i += 1) {
+      let char = word[i];
+
+      let evenOrOddIdx = (counter % 2 === 0) ? 'even' : 'odd';
+      if (char >= 'a' && char <= 'z') {
+        char = evenOrOddIdx === 'even' ? char.toUpperCase() : char
+        staggeredWord += char;
+      } else if (char >= 'A' && char <= 'Z') {
+        char = evenOrOddIdx === 'odd' ? char.toLowerCase() : char
+        staggeredWord += char;
+      } else {
+        staggeredWord += char;
+      }
+
+      if (char === ' ' || Number.parseInt(char)){
+        continue;
+      } else {
+        counter += 1;
+      }
+    }
+    return staggeredWord;
+  })
+  return strArray.join(' ');
+}
+console.log(staggeredCase("I Love Launch School!") === "I lOvE lAuNcH sChOoL!");
+console.log(staggeredCase("ALL CAPS") === "AlL cApS");
+console.log(
+  staggeredCase("ignore 77 the 444 numbers") === "IgNoRe 77 ThE 444 nUmBeRs"
+);
+*/
