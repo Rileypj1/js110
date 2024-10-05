@@ -57,7 +57,7 @@ function convertCardsToValues (currentPlayerCards) {
   // 3. For Aces "A", look at the current total. Run the calculate Aces function
   let cards = Object.values(currentPlayerCards);
   cards = cards.map(card => {
-    if (card > 0 && card < 10) {
+    if (card >= 2 && card <= 10) {
       return card;
     } else if (['J','Q','K'].includes(card)) {
       return 10;
@@ -115,7 +115,7 @@ function displayDeal(currentPlayer, name) {
   if (name === 'dealer') {
     console.log(`Dealer has ${cards[0]} and unknown card`)
   } else {
-    console.log(`You have: ${joinAnd(cards)}`);
+    console.log(`You have ${joinAnd(cards)}`);
   }
 }
 
@@ -123,8 +123,8 @@ function getTotalValue(currentPlayer) {
   let converted = convertCardsToValues(currentPlayer);
   return converted.reduce((acc, card) => acc + card, 0);
 }
-// let player = { card1: 3, card2: 9, card4: 8, card5: 'J',card3: 'A' };
-// console.log(busted(player));
+// let player = { card1: 7, card2: 10, card4: 'Q' };
+// console.log(convertCardsToValues(player));
 
 function busted(totalCardValue) {
   return totalCardValue > 21;
@@ -142,13 +142,27 @@ function doesDealerHitOrStay(currentPlayer) {
 function displayWinner(player1, player2) {
   let player1Total = getTotalValue(player1);
   let player2Total = getTotalValue(player2);
+  let dealerCards = nameFaceCards(player2);
+  let winner = (player1Total > player2Total) && (player1Total !== player2Total) ? 'You': 'Dealer';
 
-  if (player1Total > player2Total) {
-    console.log(`Your total: ${player1Total}.\nThe dealer's total: ${player2Total}. You won!`);
-  } else if (player2Total > player1Total) {
-    console.log(`Your total: ${player1Total}.\nThe dealer's total: ${player2Total}. Dealer won!`);
+  if (player1Total === player2Total) {
+    console.log(`\nYou had: ${displayDeal(player1, 'player')}. Your total: ${player1Total}.`);
+    console.log(`The dealer had ${joinAnd(dealerCards)}. The dealer's total: ${player2Total}. It's a tie!`);
   } else {
-    console.log(`Your total: ${player1Total}.\nThe dealer's total: ${player2Total}. It's a tie!`);
+    console.log(`\nYou had: ${displayDeal(player1, 'player')}. Your total: ${player1Total}.`);
+    console.log(`The dealer had ${joinAnd(dealerCards)}. The dealer's total: ${player2Total}. ${winner} won!`);
+  }
+}
+
+function runDealerTurn(dealer, deck) {
+  while (true) {
+    console.log("hit or stay?\n");
+    let decision = doesDealerHitOrStay(dealer);
+
+    console.log(`Dealer chose ${decision}`);
+    if (decision === 'stay' || busted(getTotalValue(dealer))) break;
+    dealer[`card${Object.values(dealer).length + 1}`] = deck.shift();
+    displayDeal(dealer, 'dealer');
   }
 }
 
@@ -157,6 +171,7 @@ while (true) {
   const deck = shuffle(makeDeck());
   const player = {};
   const dealer = {};
+  let answer = '';
 
   deal(deck, player, dealer);
   displayDeal(dealer, 'dealer');
@@ -167,7 +182,6 @@ while (true) {
   2. If stay, stop asking.
   3. Otherwise, go to #1.
   */
- // currently this is resetting my deck of cards after each loop and not remembering what cards I have
   while (true) {
     console.log("hit or stay?" + '\n');
     let answer = rlSync.question();
@@ -175,12 +189,13 @@ while (true) {
     player[`card${Object.values(player).length + 1}`] = deck.shift();
     if (busted(getTotalValue(player))) break;
     displayDeal(player, 'player');
+    displayDeal(dealer, 'dealer');
   }
   if (busted(getTotalValue(player))) {
     displayDeal(player, 'player');
     // probably end the game? or ask the user to play again?
-    console.log('Looks like you went over 21! Dealer wins. Would you like to play again? (y/n)')
-    let answer = rlSync.question();
+    console.log('\nLooks like you went over 21! Dealer wins. Would you like to play again? (y/n)')
+    answer = rlSync.question();
     if (answer.toLowerCase() === 'n') {
       console.log('Thanks for playing 21!')
       break;
@@ -193,15 +208,12 @@ while (true) {
   /*
   Dealer Turn
   */
-  while (true) {
-    console.log("hit or stay?\n");
-    let decision = doesDealerHitOrStay(dealer);
-
-    console.log(`Dealer chose ${decision}`);
-    if (decision === 'stay' || busted(getTotalValue(dealer))) break;
-    dealer[`card${Object.values(dealer).length + 1}`] = deck.shift();
-    displayDeal(dealer, 'dealer');
+  if (answer.toLowerCase() === 'n') {
+    break;
+  } else {
+    runDealerTurn(dealer, deck);
   }
+// need to add details of total values and cards the dealer had here
   if (busted(getTotalValue(dealer))) {
     displayDeal(dealer, 'dealer')
     console.log('You won! Looks like the dealer was busted. Would you like to play again? (y/n)');
@@ -214,7 +226,7 @@ while (true) {
     displayWinner(player, dealer);
   }
   console.log('Would you like to play again? (y/n)');
-  let answer = rlSync.question();
+  answer = rlSync.question();
   if (answer.toLowerCase() === 'n') {
     console.log('Thanks for playing 21!')
     break;
