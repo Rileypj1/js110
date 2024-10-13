@@ -166,6 +166,15 @@ function runDealerTurn(dealer, deck) {
   }
 }
 
+function displayBustedMessage(bool, inputPlayer, playerName) {
+  if (bool) {
+    displayDeal(inputPlayer, playerName);
+    let winner = playerName === 'player' ? 'Dealer' : 'Player';
+    // probably end the game? or ask the user to play again?
+    console.log(`\nLooks like you went over 21! ${winner} wins. Would you like to play again? (y/n)`);
+  }
+}
+
 while (true) {
   console.clear();
   const deck = shuffle(makeDeck());
@@ -191,28 +200,26 @@ while (true) {
     displayDeal(player, 'player');
     displayDeal(dealer, 'dealer');
   }
-  if (busted(getTotalValue(player))) {
-    displayDeal(player, 'player');
-    // probably end the game? or ask the user to play again?
-    console.log('\nLooks like you went over 21! Dealer wins. Would you like to play again? (y/n)')
+
+  displayBustedMessage(busted(getTotalValue(player)), player, 'player');
+  answer = rlSync.question();
+  while (!['y','n','Y', 'N', 'Yes'.toLowerCase(), 'No'.toLowerCase()].includes(answer.trim())) {
+    console.log('Looks like we didn\'t understand you. Would you like to play again? (y/n)');
     answer = rlSync.question();
-    if (answer.toLowerCase() === 'n') {
-      console.log('Thanks for playing 21!')
-      break;
-    }
-  } else {
-    console.log("You chose to stay!");  // if player didn't bust, must have stayed to get here
-    console.log(`Here are your total points: ${getTotalValue(player)}. Dealer's round now!\n\n`);
   }
+  if (answer.toLowerCase() === 'n') {
+    console.log('Thanks for playing 21!')
+    break;
+  }
+  // } else {
+  //   console.log("You chose to stay!");  // if player didn't bust, must have stayed to get here
+  //   console.log(`Here are your total points: ${getTotalValue(player)}. Dealer's round now!\n\n`);
+  // }
 
   /*
   Dealer Turn
   */
-  if (answer.toLowerCase() === 'n') {
-    break;
-  } else {
-    runDealerTurn(dealer, deck);
-  }
+  runDealerTurn(dealer, deck);
 // need to add details of total values and cards the dealer had here
   if (busted(getTotalValue(dealer))) {
     displayDeal(dealer, 'dealer')

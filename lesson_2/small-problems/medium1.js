@@ -104,7 +104,7 @@ maxRotation(35);              // 53
 maxRotation(105);             // 15 -- the leading zero gets dropped
 maxRotation(8703529146);      // 7321609845
 */
-
+/*
 //Stack Machine Interpretation
 // writing a function that operates as a mini stack and register programming language
 // Input: selection from a predetermined list of commands to run 
@@ -174,3 +174,58 @@ minilang('-3 PUSH 5 SUB PRINT');
 
 minilang('6 PUSH');
 // (nothing is printed because the `program` argument has no `PRINT` commands)
+*/
+
+// word to digit 
+// Input: string/sentence 
+// Ouput: same string that has the literal digit for every occurence of a number word (e.g., "One, Two, Three...")
+// Implicit Rules: there is a space between consectutive numbers in the output (e.g., '5 5 5' NOT '555');
+
+// Test Cases: wordToDigit('Please call me at five five five one two three four. Thanks.');
+// // "Please call me at 5 5 5 1 2 3 4. Thanks."
+// Data Structures: input and output are strings but I will consider transforming to an array for iteration in my algo
+// Algo:
+// 1. create an object numberDict with the keys being the number word and values being the corresponding digit 
+// 2. set a new array strArray that is the input argument converted to an array 
+// 3. iterate over strArray
+//   - for each Element, check if there is a match in the numberDict object. 
+//   - if yes, return the digit value of the Element, if not return the same value as the element 
+// 4. join the result of this iteration to convert this transformed array to a new string, converted; 
+// 5. return the converted string
+function isFinalCharPunct(str) {
+  return str[str.length-1] < 'a';
+}
+function wordToDigit(sentence) {
+  const numberDict = {
+    one: 1,
+    two: 2,
+    three: 3,
+    four: 4,
+    five: 5,
+    six: 6,
+    seven: 7,
+    eight: 8,
+    nine: 9
+  }
+  let strArray = sentence.split(' ');
+  let transformedArr = strArray.map(word => {
+    let slicedWord = word;
+    if (isFinalCharPunct(slicedWord)) {
+      slicedWord = slicedWord.slice(0, slicedWord.length-1);
+    }
+    if (numberDict.hasOwnProperty(slicedWord)) {
+      if (isFinalCharPunct(slicedWord)) {
+        return numberDict[slicedWord] + word[word.length-1];
+      } else {
+        return word;
+      }
+      
+    } else {
+      return word;
+    }
+  });
+  let final = transformedArr.join(' ');
+  console.log(final);
+  return final;
+}
+wordToDigit('Please call me at five five five one two three four. Thanks.');
