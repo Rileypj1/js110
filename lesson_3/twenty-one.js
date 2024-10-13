@@ -160,7 +160,11 @@ function runDealerTurn(dealer, deck) {
     let decision = doesDealerHitOrStay(dealer);
 
     console.log(`Dealer chose ${decision}`);
-    if (decision === 'stay' || busted(getTotalValue(dealer))) break;
+    if (decision === 'stay') {
+      return 'stay';
+    } else if (busted(getTotalValue(dealer))) {
+      return 'busted';
+    }
     dealer[`card${Object.values(dealer).length + 1}`] = deck.shift();
     displayDeal(dealer, 'dealer');
   }
@@ -171,8 +175,26 @@ function displayBustedMessage(bool, inputPlayer, playerName) {
     displayDeal(inputPlayer, playerName);
     let winner = playerName === 'player' ? 'Dealer' : 'Player';
     // probably end the game? or ask the user to play again?
-    console.log(`\nLooks like you went over 21! ${winner} wins. Would you like to play again? (y/n)`);
+    console.log(`\nLooks like you went over 21! ${winner} wins.`);
   }
+}
+function runPlayerTurn(player, dealer, deck) {
+  while (true) {
+    console.log("hit or stay?" + '\n');
+    answer = rlSync.question();
+    if (answer.toLowerCase() === 'stay') return 'stay';
+    player[`card${Object.values(player).length + 1}`] = deck.shift();
+    if (busted(getTotalValue(player))) return 'busted';
+    displayDeal(player, 'player');
+    displayDeal(dealer, 'dealer');
+  };
+}
+function playAgainAndCheckResponse(message) {
+  let str = rlSync.question(message);
+  while (!['y','n','Y', 'N', 'Yes'.toLowerCase(), 'No'.toLowerCase()].includes(str.trim())) {
+    str = rlSync.question(message);
+  }
+  return str.toLowerCase();
 }
 
 while (true) {
@@ -183,59 +205,34 @@ while (true) {
   let answer = '';
 
   deal(deck, player, dealer);
-  displayDeal(dealer, 'dealer');
   displayDeal(player, 'player');
+  displayDeal(dealer, 'dealer');
+
   /*
   Player Turn
   1. Ask player to hit or stay.
   2. If stay, stop asking.
   3. Otherwise, go to #1.
   */
-  while (true) {
-    console.log("hit or stay?" + '\n');
-    let answer = rlSync.question();
-    if (answer.toLowerCase() === 'stay') break;
-    player[`card${Object.values(player).length + 1}`] = deck.shift();
-    if (busted(getTotalValue(player))) break;
-    displayDeal(player, 'player');
-    displayDeal(dealer, 'dealer');
-  }
 
-  displayBustedMessage(busted(getTotalValue(player)), player, 'player');
-  answer = rlSync.question();
-  while (!['y','n','Y', 'N', 'Yes'.toLowerCase(), 'No'.toLowerCase()].includes(answer.trim())) {
-    console.log('Looks like we didn\'t understand you. Would you like to play again? (y/n)');
-    answer = rlSync.question();
-  }
-  if (answer.toLowerCase() === 'n') {
-    console.log('Thanks for playing 21!')
-    break;
-  }
-  // } else {
-  //   console.log("You chose to stay!");  // if player didn't bust, must have stayed to get here
-  //   console.log(`Here are your total points: ${getTotalValue(player)}. Dealer's round now!\n\n`);
-  // }
-
-  /*
-  Dealer Turn
-  */
-  runDealerTurn(dealer, deck);
-// need to add details of total values and cards the dealer had here
-  if (busted(getTotalValue(dealer))) {
-    displayDeal(dealer, 'dealer')
-    console.log('You won! Looks like the dealer was busted. Would you like to play again? (y/n)');
-    let answer = rlSync.question();
-    if (answer.toLowerCase() === 'n') {
-      console.log('Thanks for playing 21!')
-      break;
-    }
+  let outcome = runPlayerTurn(player, dealer, deck);
+  let dealerOutcome = ''
+  if (outcome === 'busted') {
+    displayBustedMessage(busted(getTotalValue(player)), player, 'player');
+    answer = playAgainAndCheckResponse('Would you like to play again? Please type y/n ');
   } else {
-    displayWinner(player, dealer);
+      // Dealer Turn
+    dealerOutcome = runDealerTurn(dealer, deck);
+    if (answer === 'n') break;
+    if (dealerOutcome === 'busted') {
+      displayDeal(dealer, 'dealer')
+      console.log('You won! Looks like the dealer was busted.');
+      answer = playAgainAndCheckResponse('Would you like to play again? (y/n)');
+    } else {
+      displayWinner(player, dealer);
+      answer = playAgainAndCheckResponse('Would you like to play again? (y/n) ');
+    }
   }
-  console.log('Would you like to play again? (y/n)');
-  answer = rlSync.question();
-  if (answer.toLowerCase() === 'n') {
-    console.log('Thanks for playing 21!')
-    break;
-  }
+
+  if(answer === 'n') break;
 }
