@@ -17,8 +17,10 @@ const CARD_NAMES = {
   A: 'Ace'
 };
 const SUITS = ['S','H','D','C'];
+const SUIT_NAMES  = ['Spades', 'Hearts', 'Diamonds', 'Clubs'];
 const POINT_THRESHOLD = 21;
 const DEALER_POINTS_UNTIL_STAYING = 17;
+const WINNER_LOG_LINES = 50;
 
 function makeDeck() {
   let arr = [2,3,4,5,6,7,8,9,10,'J','Q','K','A'];
@@ -100,11 +102,12 @@ function joinAnd(playersCards) {
 
 function nameFaceCards(arr) {
   arr = arr.map(card => {
+    let whichSuit = SUITS.indexOf(card[0]);
     if (['J','Q','K','A'].includes(card[1])) {
       let name = CARD_NAMES[card[1]];
-      return [card[0],name];
+      return  name + ' of ' + SUIT_NAMES[whichSuit] //[card[0],name];
     } else {
-      return card;
+      return card[1] + ' of ' + SUIT_NAMES[whichSuit];
     }
   });
   return arr;
@@ -114,9 +117,9 @@ function displayDeal(currentPlayer, name, mask = 'n') {
   let cards = Object.values(currentPlayer);
   cards = nameFaceCards(cards);
   if (name === 'dealer' && mask === 'y') {
-    console.log(`Dealer has ${cards[0]} and unknown card`);
+    console.log(`Dealer has the ${cards[0]} and hidden card`);
   } else if (name === 'dealer' && mask === 'n') {
-    console.log(`Dealer has ${joinAnd(cards)}`);
+    console.log(`Dealer has the ${joinAnd(cards)}`);
   } else {
     console.log(`You have ${joinAnd(cards)}`);
   }
@@ -146,7 +149,7 @@ function displayWinner(player1, player2) {
   let player1Total = getTotalValue(player1);
   let player2Total = getTotalValue(player2);
   let winner = (player1Total > player2Total) && (player1Total !== player2Total) ? 'You' : 'Dealer';
-
+  console.log('='.repeat(WINNER_LOG_LINES));
   if (player1Total === player2Total) {
     displayDeal(player1, 'player');
     console.log(`Your total: ${player1Total}.\n`);
@@ -161,6 +164,7 @@ function displayWinner(player1, player2) {
 
     console.log(`${winner} won!`);
   }
+  console.log('='.repeat(WINNER_LOG_LINES));
 }
 
 function runDealerTurn(dealer, deck) {
