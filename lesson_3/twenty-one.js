@@ -28,7 +28,7 @@ function makeDeck() {
   for (let suit = 0; suit < 4; suit += 1) {
     arr.forEach(cardValue => {
       finalDeck.push([SUITS[suit],cardValue]);
-    })
+    });
   }
   return finalDeck;
 }
@@ -105,7 +105,7 @@ function nameFaceCards(arr) {
     let whichSuit = SUITS.indexOf(card[0]);
     if (['J','Q','K','A'].includes(card[1])) {
       let name = CARD_NAMES[card[1]];
-      return  name + ' of ' + SUIT_NAMES[whichSuit] //[card[0],name];
+      return  name + ' of ' + SUIT_NAMES[whichSuit];
     } else {
       return card[1] + ' of ' + SUIT_NAMES[whichSuit];
     }
@@ -136,8 +136,7 @@ function busted(totalCardValue) {
 }
 
 
-function doesDealerHitOrStay(currentPlayer) {
-  let dealerCurrentTotal = getTotalValue(currentPlayer);
+function doesDealerHitOrStay(dealerCurrentTotal) {
   if (dealerCurrentTotal >= DEALER_POINTS_UNTIL_STAYING) {
     return 'stay';
   } else {
@@ -145,62 +144,62 @@ function doesDealerHitOrStay(currentPlayer) {
   }
 }
 
-function displayWinner(player1, player2) {
-  let player1Total = getTotalValue(player1);
-  let player2Total = getTotalValue(player2);
+function displayWinner(player1, player2, totals) {
+  let player1Total = totals['playerTotal'];
+  let player2Total = totals['dealerTotal'];
   let winner = (player1Total > player2Total) && (player1Total !== player2Total) ? 'You' : 'Dealer';
   console.log('='.repeat(WINNER_LOG_LINES));
   if (player1Total === player2Total) {
     displayDeal(player1, 'player');
-    console.log(`Your total: ${player1Total}.\n`);
     displayDeal(player2,'dealer');
-    console.log(`The dealer's total: ${player2Total}.\n`);
     console.log(`It's a tie!`);
   } else {
     displayDeal(player1, 'player');
-    console.log(`Your total: ${player1Total}.\n`);
     displayDeal(player2,'dealer');
-    console.log(`The dealer's total: ${player2Total}.\n`);
-
     console.log(`${winner} won!`);
   }
   console.log('='.repeat(WINNER_LOG_LINES));
 }
 
-function runDealerTurn(dealer, deck) {
+function runDealerTurn(dealer, deck, totals) {
   while (true) {
     console.log("hit or stay?\n");
-    let decision = doesDealerHitOrStay(dealer);
+    let decision = doesDealerHitOrStay(totals['dealerTotal']);
 
     console.log(`Dealer chose ${decision}`);
-    if (busted(getTotalValue(dealer))) {
-      return 'busted';
-    } else if (decision === 'stay') {
+    if (decision === 'stay') {
       return 'stay';
     }
     dealer[`card${Object.values(dealer).length + 1}`] = deck.shift();
+    totals['dealerTotal'] = getTotalValue(dealer);
+    if (busted(totals['dealerTotal'])) {
+      return 'busted';
+    }
     displayDeal(dealer, 'dealer');
   }
 }
 
-function displayBustedMessage(bool, inputPlayer, playerName) {
-  if (bool) {
-    displayDeal(inputPlayer, playerName);
-    let winner = playerName === 'player' ? 'Dealer' : 'Player';
-    console.log(`\nLooks like you went over 21! ${winner} wins.`);
-  }
+function displayBustedMessage(inputPlayer, playerName) {
+  displayDeal(inputPlayer, playerName);
+  let winner = playerName === 'player' ? 'Dealer' : 'Player';
+  console.log('='.repeat(WINNER_LOG_LINES));
+  console.log(`\nLooks like ${playerName} went over 21! ${winner} wins.\n`);
+  console.log('='.repeat(WINNER_LOG_LINES));
 }
-function runPlayerTurn(player, dealer, deck) {
+
+function runPlayerTurn(player, dealer, deck, totals) {
   while (true) {
     console.log("hit or stay?" + '\n');
     let answer = rlSync.question();
     if (answer.toLowerCase() === 'stay') return 'stay';
     player[`card${Object.values(player).length + 1}`] = deck.shift();
-    if (busted(getTotalValue(player))) return 'busted';
+    totals['playerTotal'] = getTotalValue(player);
+    if (busted(totals['playerTotal'])) return 'busted';
     displayDeal(player, 'player');
     displayDeal(dealer, 'dealer','y');
   }
 }
+
 function playAgainAndCheckResponse(message) {
   let str = rlSync.question(message);
   while (!['y','n','Y', 'N', 'yes', 'no'].includes(str.trim().toLowerCase())) {
@@ -221,22 +220,27 @@ while (true) {
   displayDeal(player, 'player');
   displayDeal(dealer, 'dealer','y');
 
+  let totals = {
+    playerTotal: getTotalValue(player),
+    dealerTotal: getTotalValue(dealer)
+  };
+
   // player turn
-  let outcome = runPlayerTurn(player, dealer, deck);
+  let outcome = runPlayerTurn(player, dealer, deck, totals);
   let dealerOutcome = '';
   if (outcome === 'busted') {
-    displayBustedMessage(busted(getTotalValue(player)), player, 'player');
+    displayBustedMessage(player, 'player');
   } else {
     // Dealer Turn
-    dealerOutcome = runDealerTurn(dealer, deck);
+    dealerOutcome = runDealerTurn(dealer, deck, totals);
     if (answer === 'n') break;
     if (dealerOutcome === 'busted') {
-      displayDeal(dealer, 'dealer');
-      console.log('You won! Looks like the dealer was busted.');
+      displayBustedMessage(dealer, 'dealer');
     } else {
-      displayWinner(player, dealer);
+      displayWinner(player, dealer, totals);
     }
   }
   answer = playAgainAndCheckResponse('Would you like to play again? (y/n) ');
   if (answer === 'n') break;
 }
+// *******Final features to add: local total variable and Best to Five feature
