@@ -121,7 +121,7 @@ function displayDeal(currentPlayer, name, mask = 'n') {
   } else if (name === 'dealer' && mask === 'n') {
     console.log(`Dealer has the ${joinAnd(cards)}`);
   } else {
-    console.log(`You have ${joinAnd(cards)}`);
+    console.log(`You have the ${joinAnd(cards)}`);
   }
 }
 
@@ -144,10 +144,21 @@ function doesDealerHitOrStay(dealerCurrentTotal) {
   }
 }
 
+function getWinner(totals) {
+  let player1Total = totals['playerTotal'];
+  let player2Total = totals['dealerTotal'];
+  let winner = (player1Total > player2Total) && (player1Total !== player2Total) ? 'Player' : 'Dealer';
+  return winner;
+}
+
+function updateRoundScores(scores, winner) {
+  scores[winner] += 1;
+}
+
 function displayWinner(player1, player2, totals) {
   let player1Total = totals['playerTotal'];
   let player2Total = totals['dealerTotal'];
-  let winner = (player1Total > player2Total) && (player1Total !== player2Total) ? 'You' : 'Dealer';
+  let winner = getWinner(totals);
   console.log('='.repeat(WINNER_LOG_LINES));
   if (player1Total === player2Total) {
     displayDeal(player1, 'player');
@@ -189,9 +200,13 @@ function displayBustedMessage(inputPlayer, playerName) {
 
 function runPlayerTurn(player, dealer, deck, totals) {
   while (true) {
-    console.log("hit or stay?" + '\n');
+    console.log("\nhit or stay?\n");
     let answer = rlSync.question();
-    if (answer.toLowerCase() === 'stay') return 'stay';
+    while (!['s','h','stay','hit'].includes(answer.toLowerCase())) {
+      console.log("hit or stay?");
+      answer = rlSync.question();
+    }
+    if (['s','stay'].includes(answer.toLowerCase())) return 'stay';
     player[`card${Object.values(player).length + 1}`] = deck.shift();
     totals['playerTotal'] = getTotalValue(player);
     if (busted(totals['playerTotal'])) return 'busted';
@@ -208,39 +223,81 @@ function playAgainAndCheckResponse(message) {
   return str.toLowerCase();
 }
 
+function displayFinalRoundWinner(playerRoundsTotal, dealerRoundsTotal) {
+  console.log('='.repeat(WINNER_LOG_LINES));
+  if (playerRoundsTotal > dealerRoundsTotal) {
+    console.log('Player won best of five!');
+  } else if (dealerRoundsTotal > playerRoundsTotal) {
+    console.log('Dealer won best of five!');
+  }
+  console.log('='.repeat(WINNER_LOG_LINES));
+}
+
 // game play
 while (true) {
-  console.clear();
-  const deck = shuffle(makeDeck());
-  const player = {};
-  const dealer = {};
-  let answer = '';
-
-  deal(deck, player, dealer);
-  displayDeal(player, 'player');
-  displayDeal(dealer, 'dealer','y');
-
-  let totals = {
-    playerTotal: getTotalValue(player),
-    dealerTotal: getTotalValue(dealer)
+  let roundsScore = {
+    Player: 0,
+    Dealer: 0
   };
 
-  // player turn
-  let outcome = runPlayerTurn(player, dealer, deck, totals);
-  let dealerOutcome = '';
-  if (outcome === 'busted') {
-    displayBustedMessage(player, 'player');
-  } else {
-    // Dealer Turn
-    dealerOutcome = runDealerTurn(dealer, deck, totals);
-    if (answer === 'n') break;
-    if (dealerOutcome === 'busted') {
-      displayBustedMessage(dealer, 'dealer');
+  while (true) {
+    console.clear();
+    const deck = shuffle(makeDeck());
+    const player = {};
+    const dealer = {};
+    let answer = '';
+
+    deal(deck, player, dealer);
+    displayDeal(player, 'player');
+    displayDeal(dealer, 'dealer','y');
+
+    let totals = {
+      playerTotal: getTotalValue(player),
+      dealerTotal: getTotalValue(dealer)
+    };
+
+    // player turn
+    let outcome = runPlayerTurn(player, dealer, deck, totals);
+    let dealerOutcome = '';
+    if (outcome === 'busted') {
+      displayBustedMessage(player, 'player');
+      roundsScore['Dealer'] += 1;
     } else {
-      displayWinner(player, dealer, totals);
+      // Dealer Turn
+      dealerOutcome = runDealerTurn(dealer, deck, totals);
+      if (answer === 'n') break;
+      if (dealerOutcome === 'busted') {
+        displayBustedMessage(dealer, 'dealer');
+        roundsScore['Player'] += 1;
+      } else {
+        displayWinner(player, dealer, totals);
+        let winner = getWinner(totals);
+        updateRoundScores(roundsScore, winner);
+      }
+    }
+    console.log(`The current rounds won for each player are:\nPlayer: ${roundsScore['Player']}\nDealer: ${roundsScore['Dealer']}`);
+    if (Object.values(roundsScore).includes(3)) {
+      break;
+    }
+    answer = playAgainAndCheckResponse('Would you like to keep playing? (y/n) ');
+    if (answer === 'n') break;
+  }
+  // wrap this section of code below into a function
+  if (roundsScore['Player'] < 3 && roundsScore['Dealer'] < 3) {
+    let roundAnswer = playAgainAndCheckResponse('Looks like the game was cut short. Would you like to play again?');
+    if (roundAnswer === 'n') {
+      console.log('Thanks for playing 21!');
+      break;
+    }
+  } else {
+    displayFinalRoundWinner(roundsScore['Player'], roundsScore['Dealer']);
+    let roundAnswer = playAgainAndCheckResponse('Would you like to play again? (y/n) ');
+    if (roundAnswer === 'n') {
+      console.log('Thanks for playing 21!');
+      break;
     }
   }
-  answer = playAgainAndCheckResponse('Would you like to play again? (y/n) ');
-  if (answer === 'n') break;
+
 }
-// *******Final features to add: local total variable and Best to Five feature
+
+// *******Final features to add: Best to Five feature
