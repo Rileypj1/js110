@@ -1,14 +1,4 @@
-/*
-1. Initialize deck
-2. Deal cards to player and dealer ✅
-3. Player turn: hit or stay
-   - repeat until bust or stay
-4. If player bust, dealer wins.
-5. Dealer turn: hit or stay
-   - repeat until total >= 17
-6. If dealer busts, player wins.
-7. Compare cards and declare winner.
-*/
+//Twenty-One
 const rlSync = require('readline-sync');
 const CARD_NAMES = {
   J: 'Jack',
@@ -59,9 +49,6 @@ function calculateAcesValue(currentPlayerCards) {
 
 
 function convertCardsToValues (currentPlayerCards) {
-  // 1. If it's a number on the card, leave the number
-  // 2. Face cards = 10
-  // 3. For Aces "A", look at the current total. Run the calculate Aces function
   let cards = Object.values(currentPlayerCards);
   cards = cards.map(card => {
     if (card[1] >= 2 && card[1] <= 10) {
@@ -233,19 +220,19 @@ function displayFinalRoundWinner(playerRoundsTotal, dealerRoundsTotal) {
   console.log('='.repeat(WINNER_LOG_LINES));
 }
 
+let answer = '';
 // game play
-while (true) {
+while (answer !== 'n') {
   let roundsScore = {
     Player: 0,
     Dealer: 0
   };
 
-  while (true) {
+  while (answer !== 'n') {
     console.clear();
     const deck = shuffle(makeDeck());
     const player = {};
     const dealer = {};
-    let answer = '';
 
     deal(deck, player, dealer);
     displayDeal(player, 'player');
@@ -280,24 +267,12 @@ while (true) {
       break;
     }
     answer = playAgainAndCheckResponse('Would you like to keep playing? (y/n) ');
-    if (answer === 'n') break;
+    // if (answer === 'n') break;
   }
-  // wrap this section of code below into a function
-  if (roundsScore['Player'] < 3 && roundsScore['Dealer'] < 3) {
-    let roundAnswer = playAgainAndCheckResponse('Looks like the game was cut short. Would you like to play again?');
-    if (roundAnswer === 'n') {
-      console.log('Thanks for playing 21!');
-      break;
-    }
-  } else {
+
+  if (roundsScore['Player'] === 3 || roundsScore['Dealer'] === 3) {
     displayFinalRoundWinner(roundsScore['Player'], roundsScore['Dealer']);
-    let roundAnswer = playAgainAndCheckResponse('Would you like to play again? (y/n) ');
-    if (roundAnswer === 'n') {
-      console.log('Thanks for playing 21!');
-      break;
-    }
+    answer = playAgainAndCheckResponse('Would you like to play again? (y/n) ');
   }
-
+  console.log('Thanks for playing 21!');
 }
-
-// *******Final features to add: Best to Five feature
