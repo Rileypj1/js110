@@ -175,7 +175,7 @@ minilang('-3 PUSH 5 SUB PRINT');
 minilang('6 PUSH');
 // (nothing is printed because the `program` argument has no `PRINT` commands)
 */
-
+/*
 // word to digit 
 // Input: string/sentence 
 // Ouput: same string that has the literal digit for every occurence of a number word (e.g., "One, Two, Three...")
@@ -229,3 +229,121 @@ function wordToDigit(sentence) {
   return final;
 }
 wordToDigit('Please call me at five five five one two three four. Thanks.');
+*/
+/*
+// Fibonacci Number Location By Length
+// Input: nonnegative number that is number of digits 
+// Output: the index of the 1st number in the Fibonacci sequence that has the number of digits as the Input
+// Explicit Rules: input argument is >= 2
+
+// Examples:
+// findFibonacciIndexByLength(2n) === 7n;    // 1 1 2 3 5 8 13
+// findFibonacciIndexByLength(3n) === 12n;   // 1 1 2 3 5 8 13 21 34 55 89 144
+// findFibonacciIndexByLength(10n) === 45n;
+// findFibonacciIndexByLength(16n) === 74n;
+// findFibonacciIndexByLength(100n) === 476n;
+// findFibonacciIndexByLength(1000n) === 4782n;
+// findFibonacciIndexByLength(10000n) === 47847n;
+
+// Data Structure:
+// Because we need to return an index, we will be working with arrays
+// Numbers to calculate the next # in sequence
+
+// Algo:
+// set an array fibonacci with just 1 as an element
+// set a number, current, to 0;
+// set a number, digits, which is the length of the first element in fibonacci
+// iterate:
+//   1. add the current element and the variable current
+//   2. check if length of the sum in step 1 is equal to the input argument;
+//     - if true, return the length of the array - 1
+//     - otherwise go to step 3.
+//   3. add this result to fibonacci
+//   4. set current to the current variable
+
+function findFibonacciIndexByLength(digits) {
+  let fibonacci = [1n];
+  let current = 1n;
+  let latest = 1n;
+ 
+  while (true) {
+    if (fibonacci.length > 1) {
+      latest = fibonacci[fibonacci.length - 1] + current;
+    }
+    // console.log(fibonacci.length - 1);
+    fibonacci.push(latest);
+    let latestString = String(latest);
+    if (BigInt(latestString.length) === digits) break;
+    current = fibonacci[fibonacci.length - 2];
+  }
+  return BigInt(fibonacci.length);
+}
+
+console.log(findFibonacciIndexByLength(2n) === 7n);    // 1 1 2 3 5 8 13
+console.log(findFibonacciIndexByLength(3n) === 12n);   // 1 1 2 3 5 8 13 21 34 55 89 144
+console.log(findFibonacciIndexByLength(10n) === 45n);
+console.log(findFibonacciIndexByLength(16n) === 74n);
+console.log(findFibonacciIndexByLength(100n) === 476n);
+console.log(findFibonacciIndexByLength(1000n) === 4782n);
+console.log(findFibonacciIndexByLength(10000n) === 47847n);
+*/
+/*
+// Fibonacci Numbers (Recursion)
+function fibonacci(nth) {
+    if (nth <= 2) {
+      return 1;
+    }
+    return fibonacci(nth - 1) + fibonacci(nth - 2);
+  }
+
+  fibonacci(1);       // 1
+  fibonacci(2);       // 1
+  fibonacci(3);       // 2
+  fibonacci(4);       // 3
+  fibonacci(5);       // 5
+  fibonacci(12);      // 144
+  fibonacci(20);      // 6765
+*/
+/*
+// Fibonacci Numbers (Procedural)
+
+function fibonacci(nth) {
+  let counter = 2;
+  let current = 1;
+  let latest  = 1;
+  while (counter < nth) {
+    let final = latest + current;
+    current = latest;
+    latest = final;
+    counter += 1;
+  }
+  console.log(latest);
+  return latest;
+}
+
+fibonacci(20);       // 6765
+fibonacci(50);       // 12586269025
+fibonacci(75);       // 2111485077978050
+*/
+/*
+// Fibonacci Numbers (Memoization)
+function fibonacci(nth) {
+  if (nth <= 2) {
+    return 1;
+  }
+  const lookup = {}
+  let current = nth - 1;
+  let previous = nth - 2;
+  lookup[current] = fibonacci(nth - 1);
+  lookup[previous] = fibonacci(nth - 2);
+  return Object.values(lookup).reduce((acc, val) => acc + val);
+  // return fibonacci(nth - 1) - fibonacci(nth - 2);
+}
+console.log(fibonacci(1));       // 1
+console.log(fibonacci(2));       // 1
+console.log(fibonacci(3));       // 2
+console.log(fibonacci(4));       // 3
+console.log(fibonacci(5));       // 5
+console.log(fibonacci(12));      // 144
+console.log(fibonacci(20));      // 6765
+*/
