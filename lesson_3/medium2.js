@@ -88,7 +88,7 @@ letterPercentages('123');
 // triangle(3, 4, 5);        // "scalene"
 // triangle(0, 3, 3);        // "invalid"
 // triangle(3, 1, 1);        // "invalid"
-
+/*
 function checkInvalid(sidesArr) {
   for (let i = 0; i < sidesArr.length; i += 1) {
     if (sidesArr[i] === 0) return 1;
@@ -138,3 +138,108 @@ triangle(3, 3, 1.5);      // "isosceles"
 triangle(3, 4, 5);        // "scalene"
 triangle(0, 3, 3);        // "invalid"
 triangle(3, 1, 1);        // "invalid"
+*/
+/*
+// Unlucky Days 
+
+// Algo:
+// Iterate over all the months of the given year.
+
+// For each month, get the day that falls on the 13th.
+// - retrieve the month 
+// Count the 13ths that fall on a Friday.
+// Return the count.
+
+// fridayThe13ths(1986);      // 1
+// fridayThe13ths(2015);      // 3
+// fridayThe13ths(2017);      // 2
+
+function fridayThe13ths(year) {
+  let thirteens = 0;
+  let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August'
+    ,'September','October','November','December'
+  ];
+  months.forEach(month => {
+    let thirteenthDay = new Date(`${month} 13, ${year}`);
+    if (thirteenthDay.getDay() === 5) thirteens += 1;
+  });
+
+  console.log(thirteens);
+}
+
+fridayThe13ths(1986);      // 1
+fridayThe13ths(2015);      // 3
+fridayThe13ths(2017);      // 2
+*/
+/*
+// Next Featured Number Higher than a Given Value
+// Input: number
+// Output: next featured number 
+// Explicit Rules for a featured number: 
+//   - has to be multiple of 7
+//   - cannot repeat digits (e.g., 133)
+//   - has to be an odd number 
+//   - largest possible featured number is 9876543201
+
+// Test cases:
+// featured(12);           // 21
+// featured(20);           // 21
+// featured(21);           // 35
+// featured(997);          // 1029
+// featured(1029);         // 1043
+// featured(999999);       // 1023547
+// featured(999999987);    // 1023456987
+// featured(9876543186);   // 9876543201
+// featured(9876543200);   // 9876543201
+// featured(9876543201);   // "There is no possible number that fulfills those requirements."
+
+// Algo:
+// 1. write a helper function for each explicit rule 
+//   - write a function multiplesOf7
+//   - write a function doesRepeatDigits and see if the number repeats digits 
+//   - write a function isOdd and check if number is odd 
+// 2. given the input number of the main function "featured", multiply by 7
+// 3. check the product from step 2 to see if it meets all conditions written in step 1
+//   - if true, return the product 
+//   - if not, multiply the product by 7
+//   - repeate until featured number is found OR until the number is > 9876543201
+
+function doesRepeatDigits(num) {
+  let numArray = String(num).split('')
+  let bool = false;
+
+  for (let i = 0; i < numArray.length; i += 1) {
+    let currentNum = numArray[i];
+    if (numArray.indexOf(currentNum, i + 1) > 0) {
+      bool = true;
+      break;
+    }
+  }
+  return bool;
+}
+function isEven(num) {
+  return num % 2 === 0;
+}
+
+function featured(num) {
+  const threshold = 9876543201;
+  let result;
+  let noResultMessage = "There is no possible number that fulfills those requirements.";
+  for (let i = num + 1; i <= threshold; i += 1) {
+    if ((i % 7 > 0 || doesRepeatDigits(i) || isEven(i))) {
+      continue;
+    } else {
+      result = i
+      break;
+    }
+  }
+  if (!result) {
+    return noResultMessage;
+  } else {
+    return result;
+  }
+}
+// console.log(featured(12));           // 21
+// console.log(featured(20));           // 21
+console.log(featured(9876543186));       // 9876543201
+*/
