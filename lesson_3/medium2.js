@@ -243,3 +243,30 @@ function featured(num) {
 // console.log(featured(20));           // 21
 console.log(featured(9876543186));       // 9876543201
 */
+
+//Sum Square - Square Sum
+// Problem:
+
+
+// sumSquareDifference(3);      // 22 --> (1 + 2 + 3)**2 - (1**2 + 2**2 + 3**2)
+// sumSquareDifference(10);     // 2640
+// sumSquareDifference(1);      // 0
+// sumSquareDifference(100);    // 25164150
+/*
+function sumSquareDifference(num) {
+  let sum = 0;
+  let sumOfSquares = 0;
+  for (let i = 0; i <= num; i += 1) {
+    sum += i;
+    sumOfSquares += (i ** 2);
+  }
+  let diff = (sum ** 2) - sumOfSquares;
+  console.log(diff)
+  return diff;
+}
+
+sumSquareDifference(3);      // 22 --> (1 + 2 + 3)**2 - (1**2 + 2**2 + 3**2)
+sumSquareDifference(10);     // 2640
+sumSquareDifference(1);      // 0
+sumSquareDifference(100);    // 25164150
+*/
