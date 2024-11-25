@@ -270,3 +270,59 @@ sumSquareDifference(10);     // 2640
 sumSquareDifference(1);      // 0
 sumSquareDifference(100);    // 25164150
 */
+
+//Is It Prime?
+// Input: positive integer 
+// Output: boolean 
+// Rules: given an input, determine if the number is a prime number. return true if prime, false if not prime
+//   : 1 is not a prime number 
+//   : prime => number is only divisible by 1 and itself
+
+// Examples: 
+// console.log(is_prime(1) === false)            // true
+// console.log(is_prime(2) === true)             // true
+// console.log(is_prime(3) === true)             // true
+// console.log(is_prime(4) === false)            // true
+// console.log(is_prime(5) === true)             // true
+
+// Algo:
+// iterate over the input number
+// start with dividing the number by 2
+// if the remainder is 0, return false 
+// if the remainder is 1, move to dividing the input number by 3
+// repeat until you get to the number that is the input number / 2
+
+function is_prime(num) {
+  let limit = Math.ceil(num / 2);
+  let divisor = 2;
+  
+  if (num === 1) {
+    return false;
+  } else if (num <= 3) {
+    return true;
+  }
+  while (divisor <= limit) {
+    if (num % divisor === 0) {
+      return false;
+    } else {
+      divisor += 1;
+    }
+  }
+  return true;
+}
+console.log(is_prime(1) === false)            // true
+console.log(is_prime(2) === true)             // true
+console.log(is_prime(3) === true)             // true
+console.log(is_prime(4) === false)            // true
+console.log(is_prime(5) === true)             // true
+console.log(is_prime(6) === false)            // true
+console.log(is_prime(7) === true)             // true
+console.log(is_prime(8) === false)            // true
+console.log(is_prime(9) === false)            // true
+console.log(is_prime(10) === false)           // true
+console.log(is_prime(23) === true)            // true
+console.log(is_prime(24) === false)           // true
+console.log(is_prime(997) === true)           // true
+console.log(is_prime(998) === false)          // true
+console.log(is_prime(3_297_061) === true)     // true
+console.log(is_prime(23_297_061) === false)   // true
