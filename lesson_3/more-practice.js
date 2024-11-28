@@ -1,11 +1,86 @@
-let statement = "The Flintstones Rock";
+// Implement a function, capitalize, that capitalizes all words in a sentences. However, only capitalize if the word is followed by a word starting with a vowel (for Ruby don’t use capitalize). -- Peter
 
-let obj = {};
-statement.split('').forEach(char => {
-  if (obj.hasOwnProperty(char)) {
-    obj[char] += 1;
-  } else if (char.trim()) {
-    obj[char] = 1;
+/*
+Understand the Problem:
+Input: string/ text/ sentence
+Output: same sentence with noted capitalized words
+Rules: return the same sentence but capitalize words where the following word starts with a vowel
+
+Algo:
+- create a string "vowels", containing all vowels;
+- split the input sentence up into a list, where each element is a separate word
+- iterate over this new sentence array
+  - check if the current iteration is on the last element
+    - if so, add the element to the array and break the loop
+  - for each element check the next element in the array
+  - look at the initial character in the next element of the array and see if there's a match in the vowels varaible
+- create the sentence in string form from this final array
+*/
+/*
+function capitalize(sentence) {
+  let vowels = 'aeiou';
+  let sentenceArr = sentence.split(' ');
+  let finalArr = [];
+  for (let i = 0; i < sentenceArr.length; i += 1) {
+    let current = sentenceArr[i];
+
+    if (i === sentenceArr.length - 1) {
+      finalArr.push(current);
+      break;
+    }
+
+    let next = sentenceArr[i + 1];
+
+    if (vowels.includes(next[0])) {
+      let capitalizedWord = current.slice(0,1).toUpperCase() + current.slice(1);
+      finalArr.push(capitalizedWord);
+    } else {
+      finalArr.push(current);
+    }
   }
-});
-console.log(obj);
+  return finalArr.join(' ');
+}
+
+// Test cases
+console.log(capitalize("hello apple world")); // "Hello apple world"
+console.log(capitalize("this is an umbrella")); // "This Is An umbrella"
+console.log(capitalize("every vowel starts an echo")); // "every vowel Starts An echo"
+console.log(capitalize("under the oak tree")); // "under The oak tree"
+console.log(capitalize("a quick brown fox")); // "a quick brown fox"
+*/
+/*
+// Write a function, snakecase, that transforms each word in a sentence to alternate between lower (even index value) and upper (odd index value) cases when the word before or after it  begins with "s".
+function snakeCase(word) {
+  let wordArr = word.split('');
+  wordArr = wordArr.map((char, idx) => {
+    if (idx % 2 === 0) {
+      return char.toUpperCase();
+    } else {
+      return char.toLowerCase();
+    }
+  });
+  return wordArr.join('');
+}
+
+function transformByS(sentence) {
+  let sentenceArr = sentence.split(' ');
+  sentenceArr = sentenceArr.map((word, idx) => {
+    if ((!sentenceArr[idx - 1]) && (sentenceArr[idx + 1][0] === 's')) {
+      return snakeCase(word);
+    } else if ((sentenceArr[idx - 1] && sentenceArr[idx + 1]) && ((sentenceArr[idx - 1][0] === 's') || (sentenceArr[idx + 1][0] === 's'))) {
+      return snakeCase(word);
+    } else if ((!sentenceArr[idx + 1]) && (sentenceArr[idx - 1][0] === 's')) {
+      return snakeCase(word);
+    } else {
+      return word;
+    }
+  });
+  return sentenceArr.join(' ')
+}
+
+console.log(transformByS("This starts the interesting sentence test")) // ThIs starts ThE InTeReStInG sentence TeSt
+console.log(transformByS("Snake simple scissors")); // 'sNaKe sImPle sCiSsOrS'
+console.log(transformByS("apples are sweet")); // 'apples aRe sweet'
+console.log(transformByS("Snake simple scissors")); // 'sNaKe sImPle sCiSsOrS'
+console.log(transformByS("simple sentence starters")); // 'sImPle sEnTeNcE sTaRtErS'
+*/
