@@ -84,3 +84,53 @@ console.log(transformByS("apples are sweet")); // 'apples aRe sweet'
 console.log(transformByS("Snake simple scissors")); // 'sNaKe sImPle sCiSsOrS'
 console.log(transformByS("simple sentence starters")); // 'sImPle sEnTeNcE sTaRtErS'
 */
+
+//practice
+// let first = ['hey', 'it\'s', 'me'];
+// let second = [1, 2, 3];
+// let concatted = first.concat(second);
+// // console.log(concatted.every(el => (typeof el === 'number') || (typeof el === 'string')));
+
+
+// const target = { a: 1, b: [1, 2] };
+// const source = { b: 4, c: 5 };
+// const final = Object.assign({}, target);
+// final['new'] = 77;
+// final['b'][2] = 3;
+// console.log(final);
+// console.log(target);
+// console.log(source);
+
+// let arr = [];
+// arr['hi'] = 3;
+
+// // Is arr empty?
+// console.log(arr.length); //      
+// console.log(Object.keys(arr).length); // 
+
+let testArr = [[1, 3], [2]];
+function shape(arr) {
+  let shapes = [];
+  let dimension = arr.slice();
+
+  while (dimension.length > 0) {
+    shapes.push(dimension.length);
+
+    dimension = dimension[0] || null
+  }
+  return shapes;
+}
+
+shapeTest = (m) => {
+  const shapes = [];
+  let dimension = m;
+  while (dimension && Array.isArray(dimension)) {
+    shapes.push(dimension.length);
+    dimension = (dimension.length && [...dimension][0]) || null;
+  }
+  return shapes;
+};
+
+console.log(shape(testArr));
+console.log(shapeTest(testArr))
+// console.log([...testArr[0]])
