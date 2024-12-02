@@ -95,7 +95,7 @@ transpose([[1]]);                     // [[1]]
 transpose([[1, 2, 3, 4, 5], [4, 3, 2, 1, 0], [3, 7, 8, 6, 2]]);
 // [[1, 4, 3], [2, 3, 7], [3, 2, 8], [4, 1, 6], [5, 0, 2]]
 */
-
+/*
 //Rotating Matrix
 
 // algo: 
@@ -136,5 +136,80 @@ let newMatrix3 = rotate90(rotate90(rotate90(rotate90(matrix2))));
 console.log(newMatrix1);      // [[3, 4, 1], [9, 7, 5], [6, 2, 8]]
 console.log(newMatrix2);      // [[5, 3], [1, 7], [0, 4], [8, 2]]
 console.log(newMatrix3);      // `matrix2` --> [[3, 7, 4, 2], [5, 1, 0, 8]]
+*/
 
+// Merge Sorted Lists
+// Input: two sorted arrays
+// Output: a single array that contains all els from both input arrays
+// Rules: the new single array must also be in sorted order 
+//   : solution can't require you to sort the new array
+//   : must build the new array one element at a time 
 
+// test cases:
+// merge([1, 5, 9], [2, 6, 8]);      // [1, 2, 5, 6, 8, 9]
+// merge([1, 1, 3], [2, 2]);         // [1, 1, 2, 2, 3]
+// merge([], [1, 4, 5]);             // [1, 4, 5]
+// merge([1, 4, 5], []);             // [1, 4, 5]
+
+// algo:
+// - create a new array 
+// - get the length of the longer of the two arrays
+// - iterate with the length of the longer array 
+//   - add a nested conditional iteration that ends after the shorter array ends 
+//     - for each element in the smaller array, loop through the longer array to find out where its index should be
+//     - insert this element from the shorter array into the index found in the previous step for the new empty array 
+
+function merge(left, right) {
+  // let longer = firstSorted.length >= secondSorted.length ? firstSorted : secondSorted;
+  // let shorter = firstSorted.length < secondSorted.length ?  firstSorted : secondSorted;
+  let leftIdx = 0;
+  let rightIdx = 0;
+  let final = [];
+
+  while (leftIdx < left.length && rightIdx < right.length) {
+    if (left[leftIdx] < right[rightIdx]) {
+      final.push(left[leftIdx]);
+      leftIdx += 1;
+    } else if (right[rightIdx] < left[leftIdx]) {
+      final.push(right[rightIdx]);
+      rightIdx += 1;
+    } else {
+      final.push(left[leftIdx],right[rightIdx]);
+      leftIdx += 1;
+      rightIdx += 1;
+    }
+  }
+  final = final.concat(left.slice(leftIdx), right.slice(rightIdx))
+  return final
+}
+
+// merge([1, 5, 9], [2, 6, 8]);      // [1, 2, 5, 6, 8, 9]
+// merge([1, 1, 3], [2, 2]);         // [1, 1, 2, 2, 3]
+// merge([], [1, 4, 5]);             // [1, 4, 5]
+// merge([1, 4, 5], []);             // [1, 4, 5]
+function mergeSort(arr) {
+  if (arr.length === 1) {
+    return arr;
+  }
+  let half = Math.floor(arr.length / 2);
+  let first = arr.slice(0,half);
+  let second = arr.slice(half);
+  first = mergeSort(first)
+  second = mergeSort(second)
+  
+
+  // return final;
+  return merge(first, second)
+  // console.log(final)
+}
+
+console.log(mergeSort([9, 5, 7, 1]));               // [1, 5, 7, 9]
+console.log(mergeSort([5, 3]));                     // [3, 5]
+console.log(mergeSort([6, 2, 7, 1, 4]));            // [1, 2, 4, 6, 7]
+console.log(mergeSort([9, 2, 7, 6, 8, 5, 0, 1])); // [0, 1, 2, 5, 6, 7, 8, 9]))
+
+console.log(mergeSort(['Sue', 'Pete', 'Alice', 'Tyler', 'Rachel', 'Kim', 'Bonnie']));
+// ["Alice", "Bonnie", "Kim", "Pete", "Rachel", "Sue", "Tyler"]
+
+console.log(mergeSort([7, 3, 9, 15, 23, 1, 6, 51, 22, 37, 54, 43, 5, 25, 35, 18, 46]));
+// [1, 3, 5, 6, 7, 9, 15, 18, 22, 23, 25, 35, 37, 43, 46, 51, 54]

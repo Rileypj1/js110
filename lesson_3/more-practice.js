@@ -108,29 +108,47 @@ console.log(transformByS("simple sentence starters")); // 'sImPle sEnTeNcE sTaRt
 // console.log(arr.length); //      
 // console.log(Object.keys(arr).length); // 
 
-let testArr = [[1, 3], [2]];
-function shape(arr) {
-  let shapes = [];
-  let dimension = arr.slice();
+// let testArr = [[1, 3], [2]];
+// function shape(arr) {
+//   let shapes = [];
+//   let dimension = arr.slice();
 
-  while (dimension.length > 0) {
-    shapes.push(dimension.length);
+//   while (dimension.length > 0) {
+//     shapes.push(dimension.length);
 
-    dimension = dimension[0] || null
-  }
-  return shapes;
-}
+//     dimension = dimension[0] || null
+//   }
+//   return shapes;
+// }
 
-shapeTest = (m) => {
-  const shapes = [];
-  let dimension = m;
-  while (dimension && Array.isArray(dimension)) {
-    shapes.push(dimension.length);
-    dimension = (dimension.length && [...dimension][0]) || null;
-  }
-  return shapes;
-};
+// shapeTest = (m) => {
+//   const shapes = [];
+//   let dimension = m;
+//   while (dimension && Array.isArray(dimension)) {
+//     shapes.push(dimension.length);
+//     dimension = (dimension.length && [...dimension][0]) || null;
+//   }
+//   return shapes;
+// };
 
-console.log(shape(testArr));
-console.log(shapeTest(testArr))
+// console.log(shape(testArr));
+// console.log(shapeTest(testArr))
 // console.log([...testArr[0]])
+
+const obj = { a: 1, b: 2, c: 3 };
+let testArr = [[1, 3], [2], 4, 'hi'];
+
+const test = (arr) => console.log(arr[0])
+
+// let newObj = {};
+// Object.keys(obj).filter(prop => obj[prop] < 3).forEach((prop) => {
+//   newObj[prop] = obj[prop];
+// })
+let newObj = Object.keys(obj).reduce((acc, key) => {
+  if (obj[key] > 2) {
+    acc[key] = obj[key]
+  }
+  return acc;
+}, {})
+
+console.log(newObj)
