@@ -158,7 +158,7 @@ console.log(newMatrix3);      // `matrix2` --> [[3, 7, 4, 2], [5, 1, 0, 8]]
 //   - add a nested conditional iteration that ends after the shorter array ends 
 //     - for each element in the smaller array, loop through the longer array to find out where its index should be
 //     - insert this element from the shorter array into the index found in the previous step for the new empty array 
-
+/*
 function merge(left, right) {
   // let longer = firstSorted.length >= secondSorted.length ? firstSorted : secondSorted;
   // let shorter = firstSorted.length < secondSorted.length ?  firstSorted : secondSorted;
@@ -213,3 +213,52 @@ console.log(mergeSort(['Sue', 'Pete', 'Alice', 'Tyler', 'Rachel', 'Kim', 'Bonnie
 
 console.log(mergeSort([7, 3, 9, 15, 23, 1, 6, 51, 22, 37, 54, 43, 5, 25, 35, 18, 46]));
 // [1, 3, 5, 6, 7, 9, 15, 18, 22, 23, 25, 35, 37, 43, 46, 51, 54]
+*/
+
+// binary search
+// Input: Array, search item --> which will be an element in the Array;
+// Output: the index of the search item in the array 
+// Rules: can assume the array is already sorted 
+//   : if item is not found, return -1
+
+// Test Case: 
+// binarySearch([1, 5, 7, 11, 23, 45, 65, 89, 102], 77);    // -1
+// binarySearch([1, 5, 7, 11, 23, 45, 65, 89, 102], 89);    // 7
+
+// Algo:
+// - make a copy of the input array 
+// - find the index value that is the half-way point of the array 
+// - if the middle value is less than the search item, only look at the elements after the middle value 
+// - do the same thing but reversed if the middle value is more than the search item 
+// - repeat steps 2-4 until the search item is found. 
+// - if no value is found, return -1
+
+function binarySearch(array, searchItem) {
+  let high = array.length - 1;
+  let low = 0;
+
+  while (low <= high) {
+    let mid = low + Math.floor((high - low) / 2);
+    if (array[mid] === searchItem) {
+      return mid;
+    } else if (array[mid] < searchItem) {
+      low = mid + 1;
+    } else {
+      high = mid - 1;
+    }
+  }
+
+  return -1;
+}
+
+let yellowPages = ['Apple Store', 'Bags Galore', 'Bike Store', 'Donuts R Us', 'Eat a Lot', 'Good Food', 'Pasta Place', 'Pizzeria', 'Tiki Lounge', 'Zooper'];
+// console.log(binarySearch(yellowPages, 'Pizzeria'));                   // 7
+// console.log(binarySearch(yellowPages, 'Apple Store'));                // 0
+
+// console.log(binarySearch([1, 5, 7, 11, 23, 45, 65, 89, 102], 77));    // -1
+console.log(binarySearch([1, 5, 7, 11, 23, 45, 65, 89, 102], 89));    // 7
+// console.log(binarySearch([1, 5, 7, 11, 23, 45, 65, 89, 102], 5));     // 1
+
+// binarySearch(['Alice', 'Bonnie', 'Kim', 'Pete', 'Rachel', 'Sue', 'Tyler'], 'Peter');  // -1
+// binarySearch(['Alice', 'Bonnie', 'Kim', 'Pete', 'Rachel', 'Sue', 'Tyler'], 'Tyler');  // 6
+
