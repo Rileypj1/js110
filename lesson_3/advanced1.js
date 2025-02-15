@@ -232,7 +232,7 @@ console.log(mergeSort([7, 3, 9, 15, 23, 1, 6, 51, 22, 37, 54, 43, 5, 25, 35, 18,
 // - do the same thing but reversed if the middle value is more than the search item 
 // - repeat steps 2-4 until the search item is found. 
 // - if no value is found, return -1
-
+/*
 function binarySearch(array, searchItem) {
   let high = array.length - 1;
   let low = 0;
@@ -261,4 +261,18 @@ console.log(binarySearch([1, 5, 7, 11, 23, 45, 65, 89, 102], 89));    // 7
 
 // binarySearch(['Alice', 'Bonnie', 'Kim', 'Pete', 'Rachel', 'Sue', 'Tyler'], 'Peter');  // -1
 // binarySearch(['Alice', 'Bonnie', 'Kim', 'Pete', 'Rachel', 'Sue', 'Tyler'], 'Tyler');  // 6
+*/
 
+//Egyptian Fractions
+// egyptian fraction function:
+// input: 
+const Fraction = require('fraction.js');
+
+function egyptian() {
+
+}
+
+function unegyptian() {
+
+}
+console.log(new Fraction(2, 1))
