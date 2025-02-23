@@ -135,20 +135,21 @@ console.log(transformByS("simple sentence starters")); // 'sImPle sEnTeNcE sTaRt
 // console.log(shapeTest(testArr))
 // console.log([...testArr[0]])
 
-const obj = { a: 1, b: 2, c: 3 };
-let testArr = [[1, 3], [2], 4, 'hi'];
+// const obj = { a: 1, b: 2, c: 3 };
+// let testArr = [[1, 3], [2], 4, 'hi'];
 
-const test = (arr) => console.log(arr[0])
+// const test = (arr) => console.log(arr[0])
 
 // let newObj = {};
 // Object.keys(obj).filter(prop => obj[prop] < 3).forEach((prop) => {
 //   newObj[prop] = obj[prop];
 // })
-let newObj = Object.keys(obj).reduce((acc, key) => {
-  if (obj[key] > 2) {
-    acc[key] = obj[key]
-  }
-  return acc;
-}, {})
+// let newObj = Object.keys(obj).reduce((acc, key) => {
+//   if (obj[key] > 2) {
+//     acc[key] = obj[key]
+//   }
+//   return acc;
+// }, {})
 
-console.log(newObj)
+// console.log(newObj)
+

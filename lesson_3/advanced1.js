@@ -262,17 +262,51 @@ console.log(binarySearch([1, 5, 7, 11, 23, 45, 65, 89, 102], 89));    // 7
 // binarySearch(['Alice', 'Bonnie', 'Kim', 'Pete', 'Rachel', 'Sue', 'Tyler'], 'Peter');  // -1
 // binarySearch(['Alice', 'Bonnie', 'Kim', 'Pete', 'Rachel', 'Sue', 'Tyler'], 'Tyler');  // 6
 */
+/* 1000 Lights
+light switches that you're turning off and on with each round
+input: # of light switches which will correspond to the # of rounds you turn off and on the lights
+output: array of the light switches (based on their position in the hallway aka index) that are on after rounds complete
+Rules: 
+  - the first round all switches are off
+  - each round you flip the switch for the lights whose index is a multiple of the round (round 2: flip lights 2, 4, 6)
+Data Structures/ Algo:
+- set an empty variable hallway
+- set an array that is length 1 - input variable, all with zeros as values
+- set a variable for round
+- for current round: get all multiples of the # of the current round all the way up just before the # exceeds the input arg
+  - create a helper function for this
+- after rounds are complete, get indices of all 1s in the hallway and them in an array
+*/
 
-//Egyptian Fractions
-// egyptian fraction function:
-// input: 
-const Fraction = require('fraction.js');
+function getMultiples(num, threshold){
+  let multiples = [];
+  for (let i = 1; (num * i) <= threshold; i += 1) {
+    if (i === 1) multiples.push(i)
+    let product = num * i
+    multiples.push(product);
 
-function egyptian() {
+    if (Math.floor(threshold / 2) === num) {
+      multiples.push(threshold);
+      break;
+    }
 
+  }
+  return multiples
 }
 
-function unegyptian() {
+function lightsOn(switches) {
+  let hallway = [];
+  hallway.length = switches;
+  hallway = hallway.fill(1, 0);
 
+  for (let i = 1; i < (switches - 1); i += 1) {
+    if (i === 1) continue;
+    let flippedSwitches = getMultiples(i, switches);
+    flippedSwitches.forEach((light) => {
+        hallway[light - 1] = hallway[light - 1] === 0 ? 1 : 0
+    });
+  }
+  console.log(hallway)
 }
-console.log(new Fraction(2, 1))
+
+lightsOn(5);
