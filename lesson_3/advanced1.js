@@ -276,7 +276,6 @@ Data Structures/ Algo:
 - for current round: get all multiples of the # of the current round all the way up just before the # exceeds the input arg
   - create a helper function for this
 - after rounds are complete, get indices of all 1s in the hallway and them in an array
-*/
 
 function getMultiples(num, threshold){
   let multiples = [];
@@ -297,16 +296,54 @@ function getMultiples(num, threshold){
 function lightsOn(switches) {
   let hallway = [];
   hallway.length = switches;
-  hallway = hallway.fill(1, 0);
+  hallway = hallway.fill(0, 0);
 
-  for (let i = 1; i < (switches - 1); i += 1) {
-    if (i === 1) continue;
+  for (let i = 1; i <= switches; i += 1) {
     let flippedSwitches = getMultiples(i, switches);
     flippedSwitches.forEach((light) => {
         hallway[light - 1] = hallway[light - 1] === 0 ? 1 : 0
     });
   }
+  hallway = hallway.map((bool, idx) => {
+    if (bool) {
+      return idx + 1
+    }
+  }).filter((on) => on);
   console.log(hallway)
 }
 
-lightsOn(5);
+lightsOn(100);      // [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+*/
+/* Diamonds
+Input: an odd integer n
+Output: a diamond that is n long and n wide at the center
+Rules:
+- each new row will have one more diamond than the previous until you reach n width
+- after reaching the max width, each row will get one diamond smaller until you reach 1
+
+Examples below
+
+Data Structures:
+integer as input, but will be working with strings to produce output
+
+Algo:
+set a variable currentRow to 1
+set an array diamond of empty strings that are length input n
+start an iteration that will have input n # of loops
+log currentRow # of diamonds
+have to get the halfway point based on input n
+*/
+
+function diamond(grid) {
+  let currentRow = 1;
+  const half = Math.floor(grid / 2)
+  for (let i = 1; i <= grid; i += 1) {
+    if (i === half) {
+      console.log('*'.repeat(grid))
+    } else if (i < half) {
+      const spaces = grid - i; 
+      const onBothSides = Math.floor(spaces / 2)
+    }
+  }
+}
+diamond(9);
