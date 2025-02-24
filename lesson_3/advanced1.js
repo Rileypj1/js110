@@ -332,18 +332,22 @@ set an array diamond of empty strings that are length input n
 start an iteration that will have input n # of loops
 log currentRow # of diamonds
 have to get the halfway point based on input n
-*/
+each iteration should have # of diamonds that are multiples of two of iteration
+
 
 function diamond(grid) {
   let currentRow = 1;
-  const half = Math.floor(grid / 2)
-  for (let i = 1; i <= grid; i += 1) {
-    if (i === half) {
-      console.log('*'.repeat(grid))
-    } else if (i < half) {
-      const spaces = grid - i; 
-      const onBothSides = Math.floor(spaces / 2)
-    }
+  for (let i = 1; i <= grid; i += 2) {
+      let remainingSpaces = (grid - i) / 2
+      console.log(' '.repeat(remainingSpaces) + '*'.repeat(i) + ' '.repeat(remainingSpaces))
+  }
+  for (let i = (grid - 2); i > 0; i -= 2) {
+    let remainingSpaces = (grid - i) / 2
+    console.log(' '.repeat(remainingSpaces) + '*'.repeat(i) + ' '.repeat(remainingSpaces))
   }
 }
-diamond(9);
+diamond(1);
+*/
+/* Now I Know My ABCs
+
+*/
