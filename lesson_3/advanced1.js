@@ -349,5 +349,101 @@ function diamond(grid) {
 diamond(1);
 */
 /* Now I Know My ABCs
+input: word
+output: boolean declaring whether the word is able to be spelled using the blocks
+Rules: given a set of blocks that have two letters each:
+B:O   X:K   D:Q   C:P   N:A
+G:T   R:E   F:S   J:W   H:U
+V:I   L:Y   Z:M
+determine if the input can be spelled:
+  1. Using only 1 letter per block
+  2. Using a block once only to spell the word
+
+Examples:
+isBlockWord('BATCH');      // true
+isBlockWord('BUTCH');      // false
+isBlockWord('jest');       // true
+
+Data Structure/ Algo:
+Input is a string
+Blocks are dictionaries/objects?
+
+write a helper function that checks if a block has been used more than once
+write a helper function that checks if a letter in a block has already been used
+iterate through the input word:
+  with each letter, run the helper functions, keeping track in separate variables-- each helper function will be an object tracking each rule
+  case doesn't matter when checking the helper function
+
+function isBlockWord(word) {
+  const keys = ['B', 'X', 'D', 'C', 'N', 'G', 'R', 'F', 'J', 'H', 'V', 'L', 'Z']
+  const vals = ['O', 'K', 'Q', 'P', 'A', 'T', 'E', 'S', 'W', 'U', 'I', 'Y', 'M']
+
+  const distinctBlockRule  = {}
+  const distinctLetterPerBlockRule = {}
+  let wordArray = word.split('')
+  
+  for (let i = 0; i < wordArray.length; i += 1) {
+    let currentBlock = keys.indexOf(wordArray[i].toUpperCase()) !== -1 ? keys.indexOf(wordArray[i].toUpperCase()): vals.indexOf(wordArray[i].toUpperCase())
+    if (distinctBlockRule.hasOwnProperty(currentBlock)) {
+      return false;
+    } else {
+      distinctBlockRule[currentBlock] = wordArray[i]
+    }
+  }
+  return true;
+}
+
+console.log(isBlockWord('BATCH'));      // true
+console.log(isBlockWord('BUTCH'));      // false
+console.log(isBlockWord('jest'));      // true
+*/
+/* Seeing Stars
+input: odd # that represents the n x n dimensions of the star
+output: star
+Rules: 
+- minimum input value is 7
+- the middle row of the star is the widest and has n stars * across
+- every row before and after middle has 3 * and are spaced incrementally further apart the further the row is from the center
+
+examples:
+star(7);
+// logs
+*  *  *
+ * * *
+  ***
+*******
+  ***
+ * * *
+*  *  *
+
+Data Structure and Algo: strings and arrays
+ we will iterate n times, and the current iteration will represent one row of stars
+
+Initialize row variable to be the input n length with empty strings
+start a loop that is n iterations:
 
 */
+
+function star(num) {
+  let row = []
+  row.length = num
+  row = row.fill(' ', 0)
+  let count = num;
+  const half = Math.floor(num / 2)
+
+  for (let i = 0; i < num; i += 1) {
+    if (i === half) {
+      row = row.fill('*',0);
+      console.log(row.join(''))
+    } else {
+      row[half] = '*'
+      row[i] = '*'
+      row[(row.length - 1) - i] = '*'
+      console.log(row.join(''))
+    }
+
+    row = row.fill(' ', 0)
+  }
+}
+
+star(9)
